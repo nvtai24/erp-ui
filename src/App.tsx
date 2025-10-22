@@ -19,8 +19,23 @@ import Products from "./pages/Products/Products";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+import { useEffect } from "react";
+import pingService from "./services/PingService";
 
 export default function App() {
+  // Test API
+  useEffect(() => {
+    const testApi = async () => {
+      try {
+        var response = await pingService.ping();
+        console.log("API response:", response);
+      } catch (error) {
+        console.error("API call error:", error);
+      }
+    };
+    testApi();
+  }, []);
+
   return (
     <>
       <Router>
