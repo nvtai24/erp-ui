@@ -31,6 +31,15 @@ const navItems: NavItem[] = [
     name: "Dashboard",
     path: "/",
   },
+  {
+    name: "Orders",
+    icon: <BoxCubeIcon />,
+    subItems: [
+      { name: "View Orders", path: "/orders", pro: false },
+      { name: "Create Order", path: "/orders/create", pro: false },
+    ],
+  },
+
   // {
   //   icon: <CalenderIcon />,
   //   name: "Calendar",
