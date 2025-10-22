@@ -2,20 +2,24 @@ import { useState, useEffect } from "react";
 
 interface CategoryFormProps {
   category?: {
+    categoryId: number;
     categoryName: string;
     description: string;
   };
   onSubmit: (data: { categoryName: string; description: string }) => void;
   onClose: () => void;
+  isSubmitting?: boolean;
 }
 
-export default function CategoryForm({ category, onSubmit, onClose }: CategoryFormProps) {
+export default function CategoryForm({ category, onSubmit, onClose, isSubmitting = false }: CategoryFormProps) {
   const [formData, setFormData] = useState({
+    categoryId: 0,
     categoryName: "",
     description: "",
   });
 
   const [errors, setErrors] = useState({
+    categoryId: 0,
     categoryName: "",
     description: "",
   });
@@ -23,6 +27,7 @@ export default function CategoryForm({ category, onSubmit, onClose }: CategoryFo
   useEffect(() => {
     if (category) {
       setFormData({
+        categoryId: category.categoryId,
         categoryName: category.categoryName,
         description: category.description,
       });
@@ -31,6 +36,7 @@ export default function CategoryForm({ category, onSubmit, onClose }: CategoryFo
 
   const validateForm = () => {
     const newErrors = {
+      categoryId: 0,
       categoryName: "",
       description: "",
     };
@@ -71,7 +77,7 @@ export default function CategoryForm({ category, onSubmit, onClose }: CategoryFo
 
   return (
     <div 
-      className="fixed inset-0 z-[999999] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm"
+      className="fixed inset-0 z-[99999999] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm"
       onClick={onClose}
     >
       <div 
@@ -150,15 +156,17 @@ export default function CategoryForm({ category, onSubmit, onClose }: CategoryFo
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
+              disabled={isSubmitting}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              disabled={isSubmitting}
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {category ? "Update" : "Create"}
+              {isSubmitting ? "Saving..." : category ? "Update" : "Create"}
             </button>
           </div>
         </form>
