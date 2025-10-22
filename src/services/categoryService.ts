@@ -1,35 +1,26 @@
-import { CategoryResponse, CreateCategoryDTO, UpdateCategoryDTO, SingleCategoryResponse } from './../types/category';
-import type { Category } from "../types/category";
 import axiosClient from "../utils/axiosClient";
-
-interface CategoryParams {
-  Keyword?: string;
-  Status?: string;
-  PageIndex?: number;
-  PageSize?: number;
-}
+import { ApiResponse, Category } from "../types/category";
 
 const categoryService = {
-  getCategories: async (params?: CategoryParams): Promise<CategoryResponse> => {
-    const response = await axiosClient.get<CategoryResponse>("/categories", { params });
-    console.log("Fetched categories:", response.data);
-    return response.data;
+  getCategories: async (params: any): Promise<ApiResponse<Category[]>> => {
+    const res = await axiosClient.get<ApiResponse<Category[]>>("/categories", { params });
+    return res.data;
   },
 
-  createCategory: async (data: CreateCategoryDTO): Promise<Category> => {
-    const response = await axiosClient.post<SingleCategoryResponse>("/categories", data);
-    return response.data.data;
+  createCategory: async (data: { categoryName: string; description: string }): Promise<ApiResponse<Category>> => {
+    const res = await axiosClient.post<ApiResponse<Category>>("/categories", data);
+    return res.data;
   },
 
-  updateCategory: async (categoryId: number, data: UpdateCategoryDTO): Promise<Category> => {
-    const response = await axiosClient.put<SingleCategoryResponse>(`/categories/${categoryId}`, data);
-    return response.data.data;
+  updateCategory: async (id: number, data: { categoryName: string; description: string }): Promise<ApiResponse<Category>> => {
+    const res = await axiosClient.put<ApiResponse<Category>>(`/categories/${id}`, data);
+    return res.data;
   },
 
-  deleteCategory: async (categoryId: number): Promise<void> => {
-    await axiosClient.delete(`/categories/${categoryId}`);
+  deleteCategory: async (id: number): Promise<ApiResponse<null>> => {
+    const res = await axiosClient.delete<ApiResponse<null>>(`/categories/${id}`);
+    return res.data;
   },
 };
-
 
 export default categoryService;
