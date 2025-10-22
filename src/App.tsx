@@ -20,7 +20,8 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import { useEffect } from "react";
-import pingService from "./services/PingService";
+import pingService from "./services/pingService";
+import Categories from "./pages/Categories/Categories";
 
 export default function App() {
   // Test API
@@ -50,6 +51,7 @@ export default function App() {
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/categories" element={<Categories />} />
 
             {/* Forms */}
             <Route path="/form-elements" element={<FormElements />} />
