@@ -1,4 +1,6 @@
-export interface Product {
+import { Category } from "./category";
+
+export interface sampleProduct {
   id: string;
   name: string;
   description?: string;
@@ -18,15 +20,25 @@ export interface Product {
 export interface ProductFilters {
   search?: string;
   category?: string;
-  status?: Product['status'];
+  status?: sampleProduct['status'];
   minPrice?: number;
   maxPrice?: number;
 }
 
 export interface ProductListResponse {
-  products: Product[];
+  products: sampleProduct[];
   total: number;
   page: number;
   limit: number;
   totalPages: number;
+}
+
+// tProduct version
+export interface Product {
+  productId: number;
+  productName: string;
+  categoryId: number;
+  unit: string;
+  unitPrice : number;
+  category: Category;
 }

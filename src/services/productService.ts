@@ -12,8 +12,7 @@ const productService = {
         console.log("Created product response:", response.data);
         return response.data;
     }
-
-}
+};
 
 export default productService;
     

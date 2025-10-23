@@ -2,13 +2,15 @@ import { useState } from "react";
 import PageBreadCrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import ProductList from "../../components/product/ProductList";
-import { Product } from "../../types/product";
+import { sampleProduct } from "../../types/product";
 
 export default function Products() {
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<sampleProduct | null>(
+    null
+  );
 
-  const handleEdit = (product: Product) => {
+  const handleEdit = (product: sampleProduct) => {
     setEditingProduct(product);
     setShowCreateModal(true);
   };

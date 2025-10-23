@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Product, ProductFilters } from "../../types/product";
+import { sampleProduct, ProductFilters } from "../../types/product";
 
 // Mock data for demonstration
-const mockProducts: Product[] = [
+const mockProducts: sampleProduct[] = [
   {
     id: "1",
     name: "iPhone 15 Pro",
@@ -83,12 +83,12 @@ const mockProducts: Product[] = [
 ];
 
 interface ProductListProps {
-  onEdit?: (product: Product) => void;
+  onEdit?: (product: sampleProduct) => void;
   onDelete?: (productId: string) => void;
 }
 
 export default function ProductList({ onEdit, onDelete }: ProductListProps) {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<sampleProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<ProductFilters>({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -129,7 +129,7 @@ export default function ProductList({ onEdit, onDelete }: ProductListProps) {
     loadProducts();
   }, [filters]);
 
-  const getStatusBadge = (status: Product["status"]) => {
+  const getStatusBadge = (status: sampleProduct["status"]) => {
     const baseClasses = "px-2 py-1 text-xs font-medium rounded-full";
     switch (status) {
       case "active":
@@ -216,7 +216,8 @@ export default function ProductList({ onEdit, onDelete }: ProductListProps) {
               onChange={(e) =>
                 setFilters((prev) => ({
                   ...prev,
-                  status: (e.target.value as Product["status"]) || undefined,
+                  status:
+                    (e.target.value as sampleProduct["status"]) || undefined,
                 }))
               }
             >
