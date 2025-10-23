@@ -1,7 +1,8 @@
-export type Warehouse = {
-  warehouseId: number;
-  warehouseName: string;
-  location: string;
+export type Supplier = {
+  supplierId: number;
+  supplierName: string;
+  contact: string;
+  address: string;
 };
 
 export type ApiResponse<T> = {
