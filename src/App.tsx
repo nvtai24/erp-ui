@@ -23,6 +23,8 @@ import { useEffect } from "react";
 import pingService from "./services/pingService";
 import Categories from "./pages/Categories/Categories";
 import Warehouses from "./pages/Warehouses/Warehouses";
+import Customers from "./pages/Customers/Customers";
+import Suppliers from "./pages/Suppliers/Suppliers";
 
 export default function App() {
   // Test API
@@ -54,6 +56,8 @@ export default function App() {
             <Route path="/products" element={<Products />} />
             <Route path="/categories" element={<Categories />} />
             <Route path="/warehouses" element={<Warehouses />} />
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/suppliers" element={<Suppliers />} />
 
             {/* Forms */}
             <Route path="/form-elements" element={<FormElements />} />
