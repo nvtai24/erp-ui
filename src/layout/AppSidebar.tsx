@@ -21,12 +21,20 @@ import SidebarWidget from "./SidebarWidget";
 import { Warehouse } from 'lucide-react';
 import { ChartBarStacked } from 'lucide-react';
 import { Package2 } from 'lucide-react';
+import { authService } from "../services/authService";
 
 type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
-  subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  subItems?: { 
+    name: string; 
+    path: string; 
+    pro?: boolean; 
+    new?: boolean;
+    requiredRole?: string; // thêm nếu muốn subItem yêu cầu role
+  }[];
+  requiredRole?: string; // thêm để menu item chính có role
 };
 
 const navItems: NavItem[] = [
@@ -54,21 +62,25 @@ const navItems: NavItem[] = [
     icon: <ChartBarStacked />,
     name: "Categories",
     path: "/categories",
+    requiredRole: "Admin",
   },
   {
     icon: <Warehouse />,
     name: "Warehouses",
     path: "/Warehouses",
+    requiredRole: "Admin",
   },
   {
     icon: <Package2 />,
     name: "Suppliers",
     path: "/suppliers",
+    requiredRole: "Admin",
   },
   {
     icon: <UserLineIcon />,
     name: "Customers",
     path: "/customers",
+    requiredRole: "Admin",
   },
   {
     icon: <ListIcon />,
@@ -126,6 +138,17 @@ const othersItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
+  const [userRoles, setUserRoles] = useState<string[]>([]);
+
+useEffect(() => {
+  const fetchRoles = async () => {
+    const user = await authService.getCurrentUser();
+    if (user) {
+      setUserRoles(user.roles || []);
+    }
+  };
+  fetchRoles();
+}, []);
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
@@ -192,10 +215,17 @@ const AppSidebar: React.FC = () => {
   };
 
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
-    <ul className="flex flex-col gap-4">
-      {items.map((nav, index) => (
+  <ul className="flex flex-col gap-4">
+    {items
+      // Lọc menu item theo role
+      .filter((nav) => {
+        if (!nav.requiredRole) return true; // không yêu cầu role → hiển thị
+        return userRoles.includes(nav.requiredRole); // có role → hiển thị
+      })
+      .map((nav, index) => (
         <li key={nav.name}>
           {nav.subItems ? (
+            // Menu có subItems
             <button
               onClick={() => handleSubmenuToggle(index, menuType)}
               className={`menu-item group ${
@@ -203,9 +233,7 @@ const AppSidebar: React.FC = () => {
                   ? "menu-item-active"
                   : "menu-item-inactive"
               } cursor-pointer ${
-                !isExpanded && !isHovered
-                  ? "lg:justify-center"
-                  : "lg:justify-start"
+                !isExpanded && !isHovered ? "lg:justify-center" : "lg:justify-start"
               }`}
             >
               <span
@@ -223,8 +251,7 @@ const AppSidebar: React.FC = () => {
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
                   className={`ml-auto w-5 h-5 transition-transform duration-200 ${
-                    openSubmenu?.type === menuType &&
-                    openSubmenu?.index === index
+                    openSubmenu?.type === menuType && openSubmenu?.index === index
                       ? "rotate-180 text-brand-500"
                       : ""
                   }`}
@@ -232,6 +259,7 @@ const AppSidebar: React.FC = () => {
               )}
             </button>
           ) : (
+            // Menu không có subItems
             nav.path && (
               <Link
                 to={nav.path}
@@ -254,6 +282,8 @@ const AppSidebar: React.FC = () => {
               </Link>
             )
           )}
+
+          {/* Render subItems nếu có */}
           {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
             <div
               ref={(el) => {
@@ -268,51 +298,58 @@ const AppSidebar: React.FC = () => {
               }}
             >
               <ul className="mt-2 space-y-1 ml-9">
-                {nav.subItems.map((subItem) => (
-                  <li key={subItem.name}>
-                    <Link
-                      to={subItem.path}
-                      className={`menu-dropdown-item ${
-                        isActive(subItem.path)
-                          ? "menu-dropdown-item-active"
-                          : "menu-dropdown-item-inactive"
-                      }`}
-                    >
-                      {subItem.name}
-                      <span className="flex items-center gap-1 ml-auto">
-                        {subItem.new && (
-                          <span
-                            className={`ml-auto ${
-                              isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
-                                : "menu-dropdown-badge-inactive"
-                            } menu-dropdown-badge`}
-                          >
-                            new
-                          </span>
-                        )}
-                        {subItem.pro && (
-                          <span
-                            className={`ml-auto ${
-                              isActive(subItem.path)
-                                ? "menu-dropdown-badge-active"
-                                : "menu-dropdown-badge-inactive"
-                            } menu-dropdown-badge`}
-                          >
-                            pro
-                          </span>
-                        )}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
+                {nav.subItems
+                  // Lọc subItems theo role nếu subItem có requiredRole
+                  .filter((subItem) => {
+                    if (!subItem.requiredRole) return true;
+                    return userRoles.includes(subItem.requiredRole);
+                  })
+                  .map((subItem) => (
+                    <li key={subItem.name}>
+                      <Link
+                        to={subItem.path}
+                        className={`menu-dropdown-item ${
+                          isActive(subItem.path)
+                            ? "menu-dropdown-item-active"
+                            : "menu-dropdown-item-inactive"
+                        }`}
+                      >
+                        {subItem.name}
+                        <span className="flex items-center gap-1 ml-auto">
+                          {subItem.new && (
+                            <span
+                              className={`ml-auto ${
+                                isActive(subItem.path)
+                                  ? "menu-dropdown-badge-active"
+                                  : "menu-dropdown-badge-inactive"
+                              } menu-dropdown-badge`}
+                            >
+                              new
+                            </span>
+                          )}
+                          {subItem.pro && (
+                            <span
+                              className={`ml-auto ${
+                                isActive(subItem.path)
+                                  ? "menu-dropdown-badge-active"
+                                  : "menu-dropdown-badge-inactive"
+                              } menu-dropdown-badge`}
+                            >
+                              pro
+                            </span>
+                          )}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
               </ul>
             </div>
           )}
         </li>
       ))}
-    </ul>
-  );
+  </ul>
+);
+
 
   return (
     <aside
