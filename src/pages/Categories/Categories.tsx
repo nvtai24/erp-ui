@@ -7,7 +7,8 @@ import CategoryForm from "../../components/category/CategoryForm";
 import {
   ToastProvider,
   useToast,
-} from "../../components/ui/toast/ToastProvider"; // ✅ import toast
+} from "../../components/ui/toast/ToastProvider";
+import { confirmDelete } from "../../components/ui/alert/ConfirmDialog";
 
 function CategoriesContent() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -64,7 +65,9 @@ function CategoriesContent() {
   };
 
   const handleDelete = async (categoryId: number) => {
-    if (!confirm("Are you sure to delete this category?")) return;
+    const result = await confirmDelete("Category");
+
+    if (!result.isConfirmed) return;
 
     try {
       const response = await categoryService.deleteCategory(categoryId);
@@ -167,7 +170,7 @@ function CategoriesContent() {
             className="border rounded-md px-3 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          <select
+          {/* <select
             value={filterStatusInput}
             onChange={(e) => setFilterStatusInput(e.target.value)}
             className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -175,7 +178,7 @@ function CategoriesContent() {
             <option value="">All Status</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
-          </select>
+          </select> */}
 
           <button
             onClick={() => {
@@ -186,6 +189,19 @@ function CategoriesContent() {
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
           >
             Filter
+          </button>
+
+          <button
+            onClick={() => {
+              setFilterName("");
+              setFilterStatus("");
+              setFilterNameInput("");
+              setFilterStatusInput("");
+              setRefreshKey((prev) => prev + 1);
+            }}
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400"
+          >
+            Clear Filter
           </button>
         </div>
 
