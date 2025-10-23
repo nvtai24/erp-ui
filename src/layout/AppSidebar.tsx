@@ -14,9 +14,13 @@ import {
   PlugInIcon,
   TableIcon,
   UserCircleIcon,
+  UserLineIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
+import { Warehouse } from 'lucide-react';
+import { ChartBarStacked } from 'lucide-react';
+import { Package2 } from 'lucide-react';
 
 type NavItem = {
   name: string;
@@ -56,9 +60,24 @@ const navItems: NavItem[] = [
     path: "/products",
   },
   {
-    icon: <BoxCubeIcon />,
+    icon: <ChartBarStacked />,
     name: "Categories",
     path: "/categories",
+  },
+  {
+    icon: <Warehouse />,
+    name: "Warehouses",
+    path: "/Warehouses",
+  },
+  {
+    icon: <Package2 />,
+    name: "Suppliers",
+    path: "/suppliers",
+  },
+  {
+    icon: <UserLineIcon />,
+    name: "Customers",
+    path: "/customers",
   },
   {
     icon: <ListIcon />,
