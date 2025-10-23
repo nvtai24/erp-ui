@@ -1,4 +1,5 @@
 import { Customer } from "./customer";
+import { Product } from "./product";
 
 export interface OrderItem {
   detailId: number;
@@ -6,7 +7,7 @@ export interface OrderItem {
   productId?: number;
   quantity?: number;
   unitPrice?: number;
-  product?: any;
+  product?: Product;
 }
 
 export interface Order {
@@ -16,4 +17,19 @@ export interface Order {
   status: string;
   customer?: Customer;
   orderItems?: OrderItem[];
+}
+
+
+export interface CreateOrderItemDto {
+  productId: number;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface CreateOrderDto {
+  customerId: number;
+  name: string;
+  contact: string;
+  address: string;
+  orderDetails: CreateOrderItemDto[];
 }
