@@ -27,6 +27,7 @@ import Categories from "./pages/Categories/Categories";
 import Warehouses from "./pages/Warehouses/Warehouses";
 import Customers from "./pages/Customers/Customers";
 import Suppliers from "./pages/Suppliers/Suppliers";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 export default function App() {
   // Test API
@@ -56,10 +57,38 @@ export default function App() {
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
             <Route path="/products" element={<Products />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/warehouses" element={<Warehouses />} />
-            <Route path="/customers" element={<Customers />} />
-            <Route path="/suppliers" element={<Suppliers />} />
+            <Route
+              path="/categories"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <Categories />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/warehouses"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <Warehouses />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/customers"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <Customers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/suppliers"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <Suppliers />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Forms */}
             <Route path="/form-elements" element={<FormElements />} />

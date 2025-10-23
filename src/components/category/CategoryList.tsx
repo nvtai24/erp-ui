@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Category } from "../../types/category";
+import { Edit, Trash2 } from "lucide-react";
 
 interface CategoryListProps {
   onEdit?: (category: Category) => void;
@@ -55,8 +56,8 @@ export default function CategoryList({ onEdit, onDelete, itemsPerPage = 10, fetc
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{cat.description}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex justify-end space-x-2">
-                    <button onClick={() => onEdit?.(cat)} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">Edit</button>
-                    <button onClick={() => onDelete?.(cat.categoryId)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">Delete</button>
+                    <button onClick={() => onEdit?.(cat)} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"><Edit size={18} /></button>
+                    <button onClick={() => onDelete?.(cat.categoryId)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"><Trash2 size={18} /></button>
                   </div>
                 </td>
               </tr>

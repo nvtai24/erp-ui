@@ -7,7 +7,8 @@ import SupplierForm from "../../components/supplier/SupplierForm";
 import {
   ToastProvider,
   useToast,
-} from "../../components/ui/toast/ToastProvider"; // ✅ import toast
+} from "../../components/ui/toast/ToastProvider";
+import { confirmDelete } from "../../components/ui/alert/ConfirmDialog";
 
 function SuppliersContent() {
   const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
@@ -64,7 +65,9 @@ function SuppliersContent() {
   };
 
   const handleDelete = async (supplierId: number) => {
-    if (!confirm("Are you sure to delete this supplier?")) return;
+    const result = await confirmDelete("Supplier");
+
+    if(!result.isConfirmed) return;
 
     try {
       const response = await SupplierService.deleteSupplier(supplierId);
@@ -168,7 +171,7 @@ function SuppliersContent() {
             className="border rounded-md px-3 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          <select
+          {/* <select
             value={filterStatusInput}
             onChange={(e) => setFilterStatusInput(e.target.value)}
             className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -176,7 +179,7 @@ function SuppliersContent() {
             <option value="">All Status</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
-          </select>
+          </select> */}
 
           <button
             onClick={() => {
@@ -187,6 +190,19 @@ function SuppliersContent() {
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
           >
             Filter
+          </button>
+
+          <button
+            onClick={() => {
+              setFilterName("");
+              setFilterStatus("");
+              setFilterNameInput("");
+              setFilterStatusInput("");
+              setRefreshKey((prev) => prev + 1);
+            }}
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400"
+          >
+            Clear Filter
           </button>
         </div>
 
@@ -209,7 +225,7 @@ function SuppliersContent() {
                   supplierId: editingSupplier.supplierId,
                   supplierName: editingSupplier.supplierName,
                   contact: editingSupplier.contact,
-                  address: editingSupplier.address
+                  address: editingSupplier.address,
                 }
               : undefined
           }
