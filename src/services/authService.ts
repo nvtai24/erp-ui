@@ -1,5 +1,5 @@
 // services/auth/authService.ts
-import axiosClient from "../utils/axiosClient"; // import axiosClient đã tạo
+import axiosClient from "../utils/axiosClient";
 
 export interface LoginRequest {
   username: string;
@@ -19,31 +19,29 @@ export interface AuthError {
 }
 
 export const authService = {
+  // Lưu tạm user trong frontend
+  currentUser: null as LoginResponse | null,
+
   /**
    * Đăng nhập
    */
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
     try {
       const response = await axiosClient.post<LoginResponse>(
-        '/Accounts/Login', // axiosClient đã có baseURL là "/api"
+        "/Accounts/Login",
         credentials,
-        { withCredentials: true } // nếu backend cần gửi cookie
+        { withCredentials: true } // gửi cookie kèm
       );
 
-      // Lưu thông tin user vào localStorage
-      if (response.data) {
-        localStorage.setItem('user', JSON.stringify({
-          username: response.data.username,
-          roles: response.data.roles,
-        }));
-      }
+      // ✅ Lưu user vào currentUser
+      authService.currentUser = response.data;
 
       return response.data;
     } catch (error: any) {
       if (error.response?.data) {
         throw error.response.data as AuthError;
       }
-      throw { message: 'Network error. Please try again.' } as AuthError;
+      throw { message: "Network error. Please try again." } as AuthError;
     }
   },
 
@@ -52,41 +50,58 @@ export const authService = {
    */
   logout: async (): Promise<void> => {
     try {
-      await axiosClient.post('/Accounts/Logout', null, { withCredentials: true });
-      localStorage.removeItem('user');
+      await axiosClient.post("/Accounts/Logout", null, { withCredentials: true });
     } catch (error) {
-      localStorage.removeItem('user');
-      throw error;
+      console.error("Logout error:", error);
+    } finally {
+      // Xóa user khi logout
+      authService.currentUser = null;
     }
   },
 
   /**
-   * Lấy thông tin user hiện tại
+   * Lấy thông tin user từ server
    */
-  getCurrentUser: () => {
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      try {
-        return JSON.parse(userStr) as { username: string; roles: string[] };
-      } catch {
-        return null;
-      }
+  getCurrentUserFromServer: async (): Promise<LoginResponse | null> => {
+    try {
+      const response = await axiosClient.get<LoginResponse>("/Accounts/CurrentUser", {
+        withCredentials: true,
+      });
+
+      // Đồng bộ currentUser
+      authService.currentUser = response.data;
+
+      return response.data;
+    } catch {
+      authService.currentUser = null;
+      return null;
     }
-    return null;
+  },
+
+  /**
+   * Lấy user đã lưu frontend
+   */
+  getCurrentUser: (): LoginResponse | null => {
+    return authService.currentUser;
   },
 
   /**
    * Kiểm tra đã đăng nhập
    */
-  isAuthenticated: (): boolean => {
-    return !!localStorage.getItem('user');
+  isAuthenticated: async (): Promise<boolean> => {
+    if (authService.currentUser) return true; // đã có trong frontend
+    const user = await authService.getCurrentUserFromServer();
+    return !!user;
   },
 
   /**
    * Kiểm tra role
    */
-  hasRole: (role: string): boolean => {
-    const user = authService.getCurrentUser();
-    return user?.roles?.includes(role) ?? false;
+  hasRole: async (role: string): Promise<boolean> => {
+    if (!authService.currentUser) {
+      const user = await authService.getCurrentUserFromServer();
+      return user?.roles?.includes(role) ?? false;
+    }
+    return authService.currentUser.roles.includes(role);
   },
 };
