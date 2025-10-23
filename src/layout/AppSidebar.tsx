@@ -14,7 +14,6 @@ import {
   PlugInIcon,
   TableIcon,
   UserCircleIcon,
-  UserLineIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
@@ -43,6 +42,15 @@ const navItems: NavItem[] = [
     name: "Dashboard",
     path: "/",
   },
+  {
+    name: "Orders",
+    icon: <BoxCubeIcon />,
+    subItems: [
+      { name: "View Orders", path: "/orders", pro: false },
+      { name: "Create Order", path: "/orders/create", pro: false },
+    ],
+  },
+
   // {
   //   icon: <CalenderIcon />,
   //   name: "Calendar",
@@ -59,7 +67,7 @@ const navItems: NavItem[] = [
     path: "/products",
   },
   {
-    icon: <ChartBarStacked />,
+    icon: <BoxCubeIcon />,
     name: "Categories",
     path: "/categories",
     requiredRole: "Admin",
