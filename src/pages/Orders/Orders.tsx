@@ -1,5 +1,7 @@
-import { useEffect } from "react";
-import Badge from "../../components/ui/badge/Badge";
+import { useEffect, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import Input from "../../components/form/input/InputField";
+import DatePicker from "../../components/form/date-picker";
 import {
   Table,
   TableBody,
@@ -8,229 +10,276 @@ import {
   TableRow,
 } from "../../components/ui/table";
 import axiosClient from "../../utils/axiosClient";
-
-interface Order {
-  id: number;
-  user: {
-    image: string;
-    name: string;
-    role: string;
-  };
-  projectName: string;
-  team: {
-    images: string[];
-  };
-  status: string;
-  budget: string;
-}
-
-// Define the table data using the interface
-const tableData: Order[] = [
-  {
-    id: 1,
-    user: {
-      image: "/images/user/user-17.jpg",
-      name: "Lindsey Curtis",
-      role: "Web Designer",
-    },
-    projectName: "Agency Website",
-    team: {
-      images: [
-        "/images/user/user-22.jpg",
-        "/images/user/user-23.jpg",
-        "/images/user/user-24.jpg",
-      ],
-    },
-    budget: "3.9K",
-    status: "Active",
-  },
-  {
-    id: 2,
-    user: {
-      image: "/images/user/user-18.jpg",
-      name: "Kaiya George",
-      role: "Project Manager",
-    },
-    projectName: "Technology",
-    team: {
-      images: ["/images/user/user-25.jpg", "/images/user/user-26.jpg"],
-    },
-    budget: "24.9K",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    user: {
-      image: "/images/user/user-17.jpg",
-      name: "Zain Geidt",
-      role: "Content Writing",
-    },
-    projectName: "Blog Writing",
-    team: {
-      images: ["/images/user/user-27.jpg"],
-    },
-    budget: "12.7K",
-    status: "Active",
-  },
-  {
-    id: 4,
-    user: {
-      image: "/images/user/user-20.jpg",
-      name: "Abram Schleifer",
-      role: "Digital Marketer",
-    },
-    projectName: "Social Media",
-    team: {
-      images: [
-        "/images/user/user-28.jpg",
-        "/images/user/user-29.jpg",
-        "/images/user/user-30.jpg",
-      ],
-    },
-    budget: "2.8K",
-    status: "Cancel",
-  },
-  {
-    id: 5,
-    user: {
-      image: "/images/user/user-21.jpg",
-      name: "Carla George",
-      role: "Front-end Developer",
-    },
-    projectName: "Website",
-    team: {
-      images: [
-        "/images/user/user-31.jpg",
-        "/images/user/user-32.jpg",
-        "/images/user/user-33.jpg",
-      ],
-    },
-    budget: "4.5K",
-    status: "Active",
-  },
-];
+import { ViewOrderDto } from "../../types/order";
 
 export default function Orders() {
+  const navigate = useNavigate();
+  const [orders, setOrders] = useState<ViewOrderDto[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const ordersPerPage = 10;
+
+  const handleViewOrder = (orderId: number) => {
+    navigate(`/orders/${orderId}`);
+  };
+
   useEffect(() => {
-    axiosClient.get("/orders").then((response) => {
+    axiosClient.get<ViewOrderDto[]>("/orders").then((response) => {
       console.log("Orders API response:", response.data);
-    });
-
-    axiosClient.get("/products").then((response) => {
-      console.log("Products API response:", response.data);
-    });
-
-    axiosClient.get("/customers").then((response) => {
-      console.log("Customers API response:", response.data);
+      setOrders(response.data);
     });
   }, []);
 
-  return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-      <div className="max-w-full overflow-x-auto">
-        <Table>
-          {/* Table Header */}
-          <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
-            <TableRow>
-              <TableCell
-                isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
-                User
-              </TableCell>
-              <TableCell
-                isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
-                Project Name
-              </TableCell>
-              <TableCell
-                isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
-                Team
-              </TableCell>
-              <TableCell
-                isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
-                Status
-              </TableCell>
-              <TableCell
-                isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-              >
-                Budget
-              </TableCell>
-            </TableRow>
-          </TableHeader>
+  const filteredOrders = useMemo(() => {
+    return orders.filter((order) => {
+      // Search filter
+      const searchMatch =
+        searchTerm === "" ||
+        order.orderId.toString().includes(searchTerm) ||
+        order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.contact.toLowerCase().includes(searchTerm.toLowerCase());
 
-          {/* Table Body */}
-          <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-            {tableData.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell className="px-5 py-4 sm:px-6 text-start">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 overflow-hidden rounded-full">
-                      <img
-                        width={40}
-                        height={40}
-                        src={order.user.image}
-                        alt={order.user.name}
-                      />
-                    </div>
-                    <div>
-                      <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                        {order.user.name}
-                      </span>
-                      <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-                        {order.user.role}
-                      </span>
-                    </div>
-                  </div>
+      // Date filter
+      const orderDate = new Date(order.orderDate);
+      const fromDate = dateFrom ? new Date(dateFrom) : null;
+      const toDate = dateTo ? new Date(dateTo) : null;
+
+      const dateMatch =
+        (!fromDate || orderDate >= fromDate) &&
+        (!toDate || orderDate <= toDate);
+
+      return searchMatch && dateMatch;
+    });
+  }, [orders, searchTerm, dateFrom, dateTo]);
+
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = filteredOrders.slice(
+    indexOfFirstOrder,
+    indexOfLastOrder
+  );
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, dateFrom, dateTo]);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div>
+          <Input
+            type="text"
+            placeholder="Search by ID, Customer Name, or Contact"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div>
+          <DatePicker
+            id="date-from"
+            placeholder="Select start date"
+            onChange={(_, currentDateString) => setDateFrom(currentDateString)}
+          />
+        </div>
+        <div>
+          <DatePicker
+            id="date-to"
+            placeholder="Select end date"
+            onChange={(_, currentDateString) => setDateTo(currentDateString)}
+          />
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div className="max-w-full overflow-x-auto">
+          <Table>
+            {/* Table Header */}
+            <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+              <TableRow>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
+                  Order ID
                 </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  {order.projectName}
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
+                  Customer Name
                 </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  <div className="flex -space-x-2">
-                    {order.team.images.map((teamImage, index) => (
-                      <div
-                        key={index}
-                        className="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
-                      >
-                        <img
-                          width={24}
-                          height={24}
-                          src={teamImage}
-                          alt={`Team member ${index + 1}`}
-                          className="w-full size-6"
-                        />
-                      </div>
-                    ))}
-                  </div>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
+                  Contact
                 </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                  <Badge
-                    size="sm"
-                    color={
-                      order.status === "Active"
-                        ? "success"
-                        : order.status === "Pending"
-                        ? "warning"
-                        : "error"
-                    }
-                  >
-                    {order.status}
-                  </Badge>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
+                  Date
                 </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                  {order.budget}
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
+                  Total Amount
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
+                  Actions
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+
+            {/* Table Body */}
+            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+              {currentOrders.map((order) => (
+                <TableRow key={order.orderId}>
+                  <TableCell className="px-5 py-4 sm:px-6 text-start">
+                    #{order.orderId}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {order.customerName}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {order.contact}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {new Date(order.orderDate).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                    {order.orderDetails
+                      .reduce(
+                        (total, item) => total + item.quantity * item.unitPrice,
+                        0
+                      )
+                      .toLocaleString()}
+                    đ
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    <div className="flex space-x-2">
+                      <button
+                        className="p-2 text-blue-600 hover:text-blue-800"
+                        onClick={() => handleViewOrder(order.orderId)}
+                      >
+                        View
+                      </button>
+                      {/* <button className="p-2 text-green-600 hover:text-green-800">
+                        Print
+                      </button> */}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div className="flex flex-1 justify-between sm:hidden">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300"
+          >
+            Next
+          </button>
+        </div>
+        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              Showing{" "}
+              <span className="font-medium">{indexOfFirstOrder + 1}</span> to{" "}
+              <span className="font-medium">
+                {Math.min(indexOfLastOrder, filteredOrders.length)}
+              </span>{" "}
+              of <span className="font-medium">{filteredOrders.length}</span>{" "}
+              results
+            </p>
+          </div>
+          <div>
+            <nav
+              className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+              aria-label="Pagination"
+            >
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed dark:ring-gray-700 dark:hover:bg-gray-800"
+              >
+                <span className="sr-only">Previous</span>
+                <svg
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12.5 15.5l-5-5 5-5"
+                  />
+                </svg>
+              </button>
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => handlePageChange(index + 1)}
+                  className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
+                    currentPage === index + 1
+                      ? "z-10 bg-brand-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+                      : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-gray-300 dark:ring-gray-700 dark:hover:bg-gray-800"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed dark:ring-gray-700 dark:hover:bg-gray-800"
+              >
+                <span className="sr-only">Next</span>
+                <svg
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M7.5 15.5l5-5-5-5"
+                  />
+                </svg>
+              </button>
+            </nav>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -20,7 +20,8 @@ export interface Order {
 }
 
 
-export interface CreateOrderItemDto {
+
+export interface OrderDetail {
   productId: number;
   quantity: number;
   unitPrice: number;
@@ -31,5 +32,22 @@ export interface CreateOrderDto {
   name: string;
   contact: string;
   address: string;
-  orderDetails: CreateOrderItemDto[];
+  orderDetails: OrderDetail[];
+}
+
+export interface ViewOrderDto {
+  orderId: number;
+  orderDate: Date;
+  customerId: number;
+  customerName: string;
+  contact: string;
+  orderDetails: ViewOrderDetailDto[];
+}
+
+export interface ViewOrderDetailDto {
+  detailId: number;
+  productId: number;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
 }

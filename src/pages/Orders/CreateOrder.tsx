@@ -6,10 +6,11 @@ import Alert from "../../components/ui/alert/Alert";
 import Input from "../../components/form/input/InputField";
 import Label from "../../components/form/Label";
 import SearchableSelect from "../../components/form/SearchableSelect";
-import type { CreateOrderDto, OrderDetail } from "../../services/orderService";
 import axiosClient from "../../utils/axiosClient";
 import { Customer } from "../../types/customer";
 import { Product } from "../../types/product";
+import { CreateOrderDto, OrderDetail } from "../../types/order";
+import orderService from "../../services/orderService";
 
 interface OrderItem extends OrderDetail {
   id: string; // local id for UI management
@@ -183,7 +184,8 @@ export default function CreateOrder() {
     setLoading(true);
     try {
       console.log("Creating order with data:", orderData);
-      await axiosClient.post("/orders", orderData);
+      // await axiosClient.post("/orders", orderData);
+      await orderService.createOrder(orderData);
       setAlert({
         show: true,
         variant: "success",

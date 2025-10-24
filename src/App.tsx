@@ -28,6 +28,7 @@ import Warehouses from "./pages/Warehouses/Warehouses";
 import Customers from "./pages/Customers/Customers";
 import Suppliers from "./pages/Suppliers/Suppliers";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import OrderDetail from "./pages/Orders/OrderDetails";
 
 export default function App() {
   // Test API
@@ -111,6 +112,7 @@ export default function App() {
             {/* Orders */}
             <Route path="/orders" element={<Orders />} />
             <Route path="/orders/create" element={<CreateOrder />} />
+            <Route path="/orders/:id" element={<OrderDetail />} />
           </Route>
 
           {/* Auth Layout */}
