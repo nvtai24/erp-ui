@@ -21,6 +21,8 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import { useEffect } from "react";
 import pingService from "./services/pingService";
+import Orders from "./pages/Orders/Orders";
+import CreateOrder from "./pages/Orders/CreateOrder";
 import Categories from "./pages/Categories/Categories";
 import Warehouses from "./pages/Warehouses/Warehouses";
 import Customers from "./pages/Customers/Customers";
@@ -109,6 +111,10 @@ export default function App() {
             {/* Charts */}
             <Route path="/line-chart" element={<LineChart />} />
             <Route path="/bar-chart" element={<BarChart />} />
+
+            {/* Orders */}
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/orders/create" element={<CreateOrder />} />
           </Route>
 
           {/* Auth Layout */}
