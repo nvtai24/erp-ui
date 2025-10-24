@@ -21,8 +21,6 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import { useEffect } from "react";
 import pingService from "./services/pingService";
-import Orders from "./pages/Orders/Orders";
-import CreateOrder from "./pages/Orders/CreateOrder";
 import Categories from "./pages/Categories/Categories";
 import Warehouses from "./pages/Warehouses/Warehouses";
 import Customers from "./pages/Customers/Customers";
@@ -30,6 +28,11 @@ import Suppliers from "./pages/Suppliers/Suppliers";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Roles from "./pages/Roles/Roles";
 import Accounts from "./pages/Accounts/Accounts";
+import Orders from "./pages/SalesOrder/Orders";
+import CreateOrder from "./pages/SalesOrder/CreateOrder";
+import OrderDetail from "./pages/SalesOrder/OrderDetails";
+import PurchaseOrders from "./pages/PurchaseOrder/PurchaseOrders";
+import CreatePurchaseOrder from "./pages/PurchaseOrder/CreatePurchaseOrder";
 
 export default function App() {
   // Test API
@@ -127,9 +130,14 @@ export default function App() {
             <Route path="/line-chart" element={<LineChart />} />
             <Route path="/bar-chart" element={<BarChart />} />
 
-            {/* Orders */}
+            {/* Sale Orders */}
             <Route path="/orders" element={<Orders />} />
             <Route path="/orders/create" element={<CreateOrder />} />
+            <Route path="/orders/:id" element={<OrderDetail />} />
+
+            {/* Purchase Orders */}
+            <Route path="/purchases" element={<PurchaseOrders />} />
+            <Route path="/purchases/create" element={<CreatePurchaseOrder />} />
           </Route>
 
           {/* Auth Layout */}

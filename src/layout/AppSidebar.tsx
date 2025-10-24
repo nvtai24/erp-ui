@@ -62,11 +62,20 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    name: "Orders",
+    name: "Sale",
     icon: <BoxCubeIcon />,
     subItems: [
       { name: "View Orders", path: "/orders", pro: false },
       { name: "Create Order", path: "/orders/create", pro: false },
+    ],
+  },
+
+  {
+    name: "Purchase",
+    icon: <BoxCubeIcon />,
+    subItems: [
+      { name: "View Purchases", path: "/purchases", pro: false },
+      { name: "Create Purchase", path: "/purchases/create", pro: false },
     ],
   },
 
