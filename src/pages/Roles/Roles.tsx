@@ -18,9 +18,10 @@ function RolesContent() {
   const [filterName, setFilterName] = useState("");
   const [filterNameInput, setFilterNameInput] = useState("");
   const { addToast } = useToast();
+  const [isLoading, setIsLoading] = useState(false); 
 
-  // ✅ Fetch tất cả role
   const fetchRoles = useCallback(async () => {
+    setIsLoading(true);
     try {
       const res = await roleService.getRoles();
 
@@ -37,26 +38,25 @@ function RolesContent() {
       console.error("Fetch roles error:", error);
       addToast({ type: "error", message: "Failed to load roles" });
       setRoles([]);
+    } finally {
+      setIsLoading(false);
     }
-  }, []);
+  }, [addToast]);
 
   useEffect(() => {
     fetchRoles();
   }, [fetchRoles]);
 
-  // ✅ Add role
   const handleAdd = () => {
     setEditingRole(null);
     setShowModal(true);
   };
 
-  // ✅ Edit role
   const handleEdit = (role: Role) => {
     setEditingRole(role);
     setShowModal(true);
   };
 
-  // ✅ Delete role
   const handleDelete = async (roleName: string) => {
     const result = await confirmDelete("Role");
     if (!result.isConfirmed) return;
@@ -81,7 +81,6 @@ function RolesContent() {
     }
   };
 
-  // ✅ Submit form (Add/Update)
   const handleSubmitForm = async (data: { name: string; oldName?: string }) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
@@ -90,14 +89,12 @@ function RolesContent() {
       let response: ApiResponse<Role>;
 
       if (data.oldName) {
-        // ⚙️ Nếu có oldName → Update
         const updateRequest: UpdateRoleRequest = {
           oldName: data.oldName,
           newName: data.name,
         };
         response = await roleService.updateRole(updateRequest);
       } else {
-        // ➕ Nếu không có oldName → Create
         response = await roleService.addRole(data.name);
       }
 

@@ -22,6 +22,7 @@ import { Warehouse } from "lucide-react";
 import { ChartBarStacked } from "lucide-react";
 import { Package2 } from "lucide-react";
 import { authService } from "../services/authService";
+import { Users } from 'lucide-react';
 
 type NavItem = {
   name: string;
@@ -45,7 +46,7 @@ const navItems: NavItem[] = [
   },
   {
     name: "Roles & Accounts",
-    icon: <BoxCubeIcon />,
+    icon: <Users />,
     requiredRole: "Admin", 
     subItems: [
       {
