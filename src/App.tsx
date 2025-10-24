@@ -56,8 +56,23 @@ export default function App() {
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
-            <Route path="/roles" element={<Roles />} />
-            <Route path="/accounts" element={<Accounts />} />
+            <Route
+              path="/accounts"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <Accounts />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/roles"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <Roles />
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
             <Route path="/products" element={<Products />} />

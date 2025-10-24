@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import PageMeta from "../../components/common/PageMeta";
 import AccountList from "../../components/account/AccountList";
 import AccountForm from "../../components/account/AccountForm";
@@ -19,31 +19,46 @@ import { confirmDelete } from "../../components/ui/alert/ConfirmDialog";
 import AssignRoleModal from "../../components/account/AssignRoleModal";
 
 function AccountsContent() {
-  const [accounts, setAccounts] = useState<Account[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingAccount, setEditingAccount] = useState<Account | null>(null);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAssignRole, setShowAssignRole] = useState(false);
+  const [filterKeyword, setFilterKeyword] = useState("");
+  const [filterKeywordInput, setFilterKeywordInput] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
   const { addToast } = useToast();
 
-  const fetchAccounts = async () => {
-    try {
-      const res = await accountService.getAccountsWithRoles();
-      if (res.success) {
-        setAccounts(res.data || []);
-      } else {
-        addToast({ type: "error", message: res.message });
-      }
-    } catch {
-      addToast({ type: "error", message: "Failed to load accounts" });
-    }
-  };
+  const fetchAccounts = useCallback(
+    async (page: number, pageSize: number) => {
+      try {
+        const res = await accountService.getAccountsWithRoles({
+          Keyword: filterKeyword || undefined,
+          PageIndex: page,
+          PageSize: pageSize,
+        });
 
-  useEffect(() => {
-    fetchAccounts();
-  }, []);
+        if (!res.success) {
+          addToast({
+            type: "error",
+            message: res.message || "Failed to fetch accounts",
+          });
+          return { data: [], totalItems: 0 };
+        }
+
+        return {
+          data: res.data || [],
+          totalItems: res.metaData?.totalItems || 0,
+        };
+      } catch (error) {
+        console.error("Fetch accounts error:", error);
+        addToast({ type: "error", message: "Failed to fetch accounts" });
+        return { data: [], totalItems: 0 };
+      }
+    },
+    [filterKeyword]
+  );
 
   const handleAdd = () => {
     setEditingAccount(null);
@@ -61,11 +76,10 @@ function AccountsContent() {
 
     setIsSubmitting(true);
     try {
-      // Gọi API delete
       const res = await accountService.deleteAccount(userName);
       if (res.success) {
         addToast({ type: "success", message: `Deleted ${userName}` });
-        fetchAccounts(); // refresh danh sách
+        setRefreshKey((prev) => prev + 1);
       } else {
         addToast({ type: "error", message: res.message });
       }
@@ -77,10 +91,11 @@ function AccountsContent() {
   };
 
   const handleSubmitForm = async (data: any) => {
+    if (isSubmitting) return;
     setIsSubmitting(true);
+
     try {
       if (editingAccount) {
-        // Update account
         const updateData: UpdateAccountRequest = {
           userName: editingAccount.userName,
           email: data.email,
@@ -90,12 +105,11 @@ function AccountsContent() {
         if (res.success) {
           addToast({ type: "success", message: "Account updated!" });
           setShowForm(false);
-          fetchAccounts();
+          setRefreshKey((prev) => prev + 1);
         } else {
           addToast({ type: "error", message: res.message });
         }
       } else {
-        // Create account via register
         const registerData: RegisterRequest = {
           userName: data.userName,
           password: data.password!,
@@ -106,7 +120,7 @@ function AccountsContent() {
         if (res.success) {
           addToast({ type: "success", message: "Account created!" });
           setShowForm(false);
-          fetchAccounts();
+          setRefreshKey((prev) => prev + 1);
         } else {
           addToast({ type: "error", message: res.message });
         }
@@ -150,7 +164,7 @@ function AccountsContent() {
       if (res.success) {
         addToast({ type: "success", message: "Roles assigned successfully!" });
         setShowAssignRole(false);
-        fetchAccounts();
+        setRefreshKey((prev) => prev + 1);
       } else {
         addToast({ type: "error", message: res.message });
       }
@@ -168,21 +182,56 @@ function AccountsContent() {
         description="Manage user accounts"
       />
 
-      <div className="mx-auto max-w-6xl mt-6">
+      <div className="mx-auto max-w-7xl mt-6">
+        {/* Header */}
         <div className="sm:flex sm:items-center sm:justify-between mb-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Account Management
           </h1>
           <button
             onClick={handleAdd}
-            className="mt-4 sm:mt-0 sm:ml-16 inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
+            className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Add Account
           </button>
         </div>
 
+        {/* Filter Form */}
+        <div className="mb-4 flex flex-wrap gap-4">
+          <input
+            type="text"
+            placeholder="Search by username, email or phone"
+            value={filterKeywordInput}
+            onChange={(e) => setFilterKeywordInput(e.target.value)}
+            className="border rounded-md px-3 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+
+          <button
+            onClick={() => {
+              setFilterKeyword(filterKeywordInput);
+              setRefreshKey((prev) => prev + 1);
+            }}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+          >
+            Filter
+          </button>
+
+          <button
+            onClick={() => {
+              setFilterKeyword("");
+              setFilterKeywordInput("");
+              setRefreshKey((prev) => prev + 1);
+            }}
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400"
+          >
+            Clear Filter
+          </button>
+        </div>
+
+        {/* Account List with Pagination */}
         <AccountList
-          accounts={accounts}
+          key={refreshKey}
+          fetchAccounts={fetchAccounts}
           onEdit={handleEdit}
           onChangePassword={(acc) => {
             setSelectedAccount(acc);
@@ -193,6 +242,7 @@ function AccountsContent() {
             setSelectedAccount(acc);
             setShowAssignRole(true);
           }}
+          itemsPerPage={5}
         />
       </div>
 
@@ -217,7 +267,7 @@ function AccountsContent() {
       {showAssignRole && selectedAccount && (
         <AssignRoleModal
           userName={selectedAccount.userName}
-          userRoles={selectedAccount.roles || []} // tick sẵn những role user đã có
+          userRoles={selectedAccount.roles || []}
           onSubmit={handleAssignRole}
           onClose={() => setShowAssignRole(false)}
           isSubmitting={isSubmitting}

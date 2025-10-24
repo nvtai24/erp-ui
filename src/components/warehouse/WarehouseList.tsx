@@ -42,16 +42,16 @@ export default function WarehouseList({ onEdit, onDelete, itemsPerPage = 10, fet
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-700">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">STT</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Location</th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {warehouses.map((w) => (
+            {warehouses.map((w, i) => (
               <tr key={w.warehouseId} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{w.warehouseId}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{i + 1}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{w.warehouseName}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">{w.location}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

@@ -146,7 +146,7 @@ function RolesContent() {
         </div>
 
         {/* Filter */}
-        <div className="mb-4 flex flex-wrap gap-4">
+        {/* <div className="mb-4 flex flex-wrap gap-4">
           <input
             type="text"
             placeholder="Search by role name"
@@ -171,7 +171,7 @@ function RolesContent() {
           >
             Clear
           </button>
-        </div>
+        </div> */}
 
         {/* Role List */}
         <RoleList roles={roles} onEdit={handleEdit} onDelete={handleDelete} />
