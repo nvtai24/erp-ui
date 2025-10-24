@@ -20,7 +20,7 @@ function SuppliersContent() {
   const [filterNameInput, setFilterNameInput] = useState("");
   const [filterStatusInput, setFilterStatusInput] = useState("");
 
-  const { addToast } = useToast(); // ✅ hook toast
+  const { addToast } = useToast(); 
 
   const fetchSuppliers = useCallback(
     async (page: number, pageSize: number) => {

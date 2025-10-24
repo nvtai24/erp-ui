@@ -32,16 +32,16 @@ export default function SignInForm() {
 
     try {
       const response = await authService.login({
-        username,  // sửa ở đây
+        username, // sửa ở đây
         password,
         rememberMe: isChecked,
       });
 
       console.log("Login successful:", response);
 
-      const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/';
+      const redirectUrl =
+        new URLSearchParams(window.location.search).get("redirect") || "/";
       navigate(redirectUrl);
-
     } catch (err: any) {
       const authError = err as AuthError;
       setError(authError.message || "Login failed. Please try again.");
@@ -68,9 +68,15 @@ export default function SignInForm() {
             <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
               Sign In
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            {/* <p className="text-sm text-gray-500 dark:text-gray-400">
               Enter your username and password to sign in!
-            </p>
+            </p> */}
+
+            {error && (
+              <div className="mt-2 text-sm text-red-600 dark:text-red-400">
+                {error}
+              </div>
+            )}
           </div>
 
           {/* Social login buttons, Or divider, Error message remain the same */}
@@ -81,9 +87,9 @@ export default function SignInForm() {
                 <Label>
                   Username <span className="text-error-500">*</span>{" "}
                 </Label>
-                <Input 
+                <Input
                   type="text"
-                  placeholder="Enter your username" 
+                  placeholder="Enter your username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   disabled={isLoading}
@@ -117,8 +123,8 @@ export default function SignInForm() {
 
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Checkbox 
-                    checked={isChecked} 
+                  <Checkbox
+                    checked={isChecked}
                     onChange={setIsChecked}
                     disabled={isLoading}
                   />
@@ -135,11 +141,7 @@ export default function SignInForm() {
               </div>
 
               <div>
-                <Button 
-                  className="w-full" 
-                  size="sm"
-                  disabled={isLoading}
-                >
+                <Button className="w-full" size="sm" disabled={isLoading}>
                   {isLoading ? "Signing in..." : "Sign in"}
                 </Button>
               </div>

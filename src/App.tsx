@@ -26,6 +26,8 @@ import Warehouses from "./pages/Warehouses/Warehouses";
 import Customers from "./pages/Customers/Customers";
 import Suppliers from "./pages/Suppliers/Suppliers";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import Roles from "./pages/Roles/Roles";
+import Accounts from "./pages/Accounts/Accounts";
 import Orders from "./pages/SalesOrder/Orders";
 import CreateOrder from "./pages/SalesOrder/CreateOrder";
 import OrderDetail from "./pages/SalesOrder/OrderDetails";
@@ -57,6 +59,23 @@ export default function App() {
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
+            <Route
+              path="/accounts"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <Accounts />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/roles"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <Roles />
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
             <Route path="/products" element={<Products />} />
