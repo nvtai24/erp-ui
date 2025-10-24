@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Account } from "../../types/account";
 import { UserCog, Trash2, Pencil, KeyRound } from "lucide-react";
 
