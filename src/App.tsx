@@ -26,6 +26,8 @@ import Warehouses from "./pages/Warehouses/Warehouses";
 import Customers from "./pages/Customers/Customers";
 import Suppliers from "./pages/Suppliers/Suppliers";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import Roles from "./pages/Roles/Roles";
+import Accounts from "./pages/Accounts/Accounts";
 
 export default function App() {
   // Test API
@@ -52,6 +54,8 @@ export default function App() {
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
+            <Route path="/roles" element={<Roles />} />
+            <Route path="/accounts" element={<Accounts />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
             <Route path="/products" element={<Products />} />
