@@ -29,6 +29,11 @@ import Customers from "./pages/Customers/Customers";
 import Suppliers from "./pages/Suppliers/Suppliers";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import OrderDetail from "./pages/Orders/OrderDetails";
+import WarehouseStatisticsReport from "./pages/Reports/WarehouseStatisticsReport";
+import ProductStockDetailReport from "./pages/Reports/ProductStockDetailReport";
+import StockHistoryReport from "./pages/Reports/StockHistoryReport";
+import CustomerOrdersReport from "./pages/Reports/CustomerOrdersReport";
+import CustomerOrderDetailPage from "./pages/Reports/CustomerOrderDetailPage";
 
 export default function App() {
   // Test API
@@ -113,6 +118,38 @@ export default function App() {
             <Route path="/orders" element={<Orders />} />
             <Route path="/orders/create" element={<CreateOrder />} />
             <Route path="/orders/:id" element={<OrderDetail />} />
+
+            {/* Reports */}
+            <Route
+              path="/reports/warehouse-statistics"
+              element={
+                  <WarehouseStatisticsReport />
+              }
+            />
+            <Route
+              path="/reports/product-stock-detail"
+              element={
+                  <ProductStockDetailReport />
+              }
+            />
+            <Route
+              path="/reports/stock-history"
+              element={
+                  <StockHistoryReport />
+              }
+            />
+            <Route
+              path="/reports/orders"
+              element={
+                  <CustomerOrdersReport />
+              }
+            />
+            <Route
+              path="/reports/orders/:orderId"
+              element={
+                  <CustomerOrderDetailPage />
+              }
+            />
           </Route>
 
           {/* Auth Layout */}
