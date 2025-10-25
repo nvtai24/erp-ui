@@ -20,6 +20,7 @@ import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
 import { Warehouse, Package2, BarChart3 } from "lucide-react";
 import { authService } from "../services/authService";
+import { Users } from 'lucide-react';
 
 type NavItem = {
   name: string;
@@ -42,13 +43,48 @@ const navItems: NavItem[] = [
     path: "/",
   },
   {
-    name: "Orders",
+    name: "Roles & Accounts",
+    icon: <Users />,
+    requiredRole: "Admin", 
+    subItems: [
+      {
+        name: "Accounts",
+        path: "/accounts",
+        requiredRole: "Admin",
+      },
+      {
+        name: "Roles",
+        path: "/roles",
+        requiredRole: "Admin",
+      },
+    ],
+  },
+  {
+    name: "Sale",
     icon: <BoxCubeIcon />,
     subItems: [
       { name: "View Orders", path: "/orders", pro: false },
       { name: "Create Order", path: "/orders/create", pro: false },
     ],
   },
+<<<<<<< HEAD
+=======
+
+  {
+    name: "Purchase",
+    icon: <BoxCubeIcon />,
+    subItems: [
+      { name: "View Purchases", path: "/purchases", pro: false },
+      { name: "Create Purchase", path: "/purchases/create", pro: false },
+    ],
+  },
+
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Calendar",
+  //   path: "/calendar",
+  // },
+>>>>>>> 92f9053d4002411937918279d083befb13569667
   {
     icon: <UserCircleIcon />,
     name: "User Profile",
