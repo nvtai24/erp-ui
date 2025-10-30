@@ -1,5 +1,6 @@
 import { Role } from "../../types/role";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, Settings } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // import navigate
 
 interface RoleListProps {
   roles: Role[];
@@ -8,6 +9,8 @@ interface RoleListProps {
 }
 
 export default function RoleList({ roles, onEdit, onDelete }: RoleListProps) {
+  const navigate = useNavigate();
+
   if (!roles.length)
     return <div className="text-center py-10">No roles found.</div>;
 
@@ -50,6 +53,12 @@ export default function RoleList({ roles, onEdit, onDelete }: RoleListProps) {
                       className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                     >
                       <Trash2 size={18} />
+                    </button>
+                    <button
+                      onClick={() => navigate(`/roles/${r.name}`)}
+                      className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
+                    >
+                      <Settings size={18} />
                     </button>
                   </div>
                 </td>

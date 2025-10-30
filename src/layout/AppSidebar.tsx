@@ -196,10 +196,21 @@ const AppSidebar: React.FC = () => {
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // const isActive = (path: string) => location.pathname === path;
+  // const isActive = useCallback(
+  //   (path: string) => location.pathname === path,
+  //   [location.pathname]
+  // );
+
   const isActive = useCallback(
-    (path: string) => location.pathname === path,
-    [location.pathname]
-  );
+  (path: string) => {
+    if (path === "/roles" && location.pathname.startsWith("/roles/")) {
+      return true;
+    }
+    
+    return location.pathname === path;
+  },
+  [location.pathname]
+);
 
   useEffect(() => {
     let submenuMatched = false;

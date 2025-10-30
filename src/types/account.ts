@@ -43,9 +43,3 @@ export type ApiResponse<T> = {
   success?: boolean;
   statusCode?: number;
 };
-
-interface GetAccountsParams {
-  Keyword?: string;
-  PageIndex?: number;
-  PageSize?: number;
-}

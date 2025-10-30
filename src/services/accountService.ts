@@ -75,7 +75,7 @@ getAccountsWithRoles: async (
 
   assignRole: async (data: AssignRoleRequest): Promise<ApiResponse<null>> => {
     const res = await axiosClient.post<ApiResponse<null>>(
-      "/Accounts/assign-role",
+      "/Role/assign",
       data
     );
     return res.data;

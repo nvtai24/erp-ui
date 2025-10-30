@@ -1,5 +1,5 @@
 // services/auth/authService.ts
-import axiosClient from "../utils/axiosClient"; // import axiosClient đã tạo
+import axiosClient from "../utils/axiosClient";
 
 export interface LoginRequest {
   username: string;
@@ -11,11 +11,18 @@ export interface LoginResponse {
   message: string;
   username: string;
   roles: string[];
+  permissions: string[];
 }
 
 export interface AuthError {
   message: string;
   errors?: Record<string, string[]>;
+}
+
+interface UserInfo {
+  username: string;
+  roles: string[];
+  permissions: string[];
 }
 
 export const authService = {
@@ -25,9 +32,9 @@ export const authService = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
     try {
       const response = await axiosClient.post<LoginResponse>(
-        '/Accounts/Login', // axiosClient đã có baseURL là "/api"
+        '/Accounts/Login',
         credentials,
-        { withCredentials: true } // nếu backend cần gửi cookie
+        { withCredentials: true }
       );
 
       // Lưu thông tin user vào localStorage
@@ -35,6 +42,7 @@ export const authService = {
         localStorage.setItem('user', JSON.stringify({
           username: response.data.username,
           roles: response.data.roles,
+          permissions: response.data.permissions || []
         }));
       }
 
@@ -63,11 +71,11 @@ export const authService = {
   /**
    * Lấy thông tin user hiện tại
    */
-  getCurrentUser: () => {
+  getCurrentUser: (): UserInfo | null => {
     const userStr = localStorage.getItem('user');
     if (userStr) {
       try {
-        return JSON.parse(userStr) as { username: string; roles: string[] };
+        return JSON.parse(userStr) as UserInfo;
       } catch {
         return null;
       }
@@ -89,4 +97,38 @@ export const authService = {
     const user = authService.getCurrentUser();
     return user?.roles?.includes(role) ?? false;
   },
+
+  /**
+   * Kiểm tra có permission cụ thể
+   */
+  hasPermission: (permission: string): boolean => {
+    const user = authService.getCurrentUser();
+    return user?.permissions?.includes(permission) ?? false;
+  },
+
+  /**
+   * Kiểm tra có ít nhất 1 trong các permissions
+   */
+  hasAnyPermission: (permissions: string[]): boolean => {
+    const user = authService.getCurrentUser();
+    if (!user?.permissions) return false;
+    return permissions.some(permission => user.permissions.includes(permission));
+  },
+
+  /**
+   * Kiểm tra có tất cả các permissions
+   */
+  hasAllPermissions: (permissions: string[]): boolean => {
+    const user = authService.getCurrentUser();
+    if (!user?.permissions) return false;
+    return permissions.every(permission => user.permissions.includes(permission));
+  },
+
+  /**
+   * Lấy danh sách permissions của user hiện tại
+   */
+  getPermissions: (): string[] => {
+    const user = authService.getCurrentUser();
+    return user?.permissions ?? [];
+  }
 };
