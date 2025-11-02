@@ -33,6 +33,7 @@ import CreateOrder from "./pages/SalesOrder/CreateOrder";
 import OrderDetail from "./pages/SalesOrder/OrderDetails";
 import PurchaseOrders from "./pages/PurchaseOrder/PurchaseOrders";
 import CreatePurchaseOrder from "./pages/PurchaseOrder/CreatePurchaseOrder";
+import PurchaseOrderDetails from "./pages/PurchaseOrder/PurchaseOrderDetails";
 
 export default function App() {
   // Test API
@@ -136,8 +137,15 @@ export default function App() {
             <Route path="/orders/:id" element={<OrderDetail />} />
 
             {/* Purchase Orders */}
-            <Route path="/purchases" element={<PurchaseOrders />} />
-            <Route path="/purchases/create" element={<CreatePurchaseOrder />} />
+            <Route path="/purchase-orders" element={<PurchaseOrders />} />
+            <Route
+              path="/purchase-orders/create"
+              element={<CreatePurchaseOrder />}
+            />
+            <Route
+              path="/purchase-orders/:id"
+              element={<PurchaseOrderDetails />}
+            />
           </Route>
 
           {/* Auth Layout */}

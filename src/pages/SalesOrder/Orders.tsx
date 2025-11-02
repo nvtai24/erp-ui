@@ -26,8 +26,8 @@ export default function Orders() {
   };
 
   useEffect(() => {
-    axiosClient.get<ViewOrderDto[]>("/orders").then((response) => {
-      console.log("Orders API response:", response.data);
+    axiosClient.get<ViewOrderDto[]>("/SalesOrders").then((response) => {
+      console.log("SalesOrders API response:", response.data);
       setOrders(response.data);
     });
   }, []);

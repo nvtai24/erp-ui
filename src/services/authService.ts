@@ -25,17 +25,18 @@ export const authService = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
     try {
       const response = await axiosClient.post<LoginResponse>(
-        '/Accounts/Login', // axiosClient đã có baseURL là "/api"
+        "/Accounts/Login", // axiosClient đã có baseURL là "/api"
         credentials,
         { withCredentials: true } // nếu backend cần gửi cookie
       );
-
-      // Lưu thông tin user vào localStorage
       if (response.data) {
-        localStorage.setItem('user', JSON.stringify({
-          username: response.data.username,
-          roles: response.data.roles,
-        }));
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            username: response.data.username,
+            roles: response.data.roles,
+          })
+        );
       }
 
       return response.data;
@@ -43,7 +44,7 @@ export const authService = {
       if (error.response?.data) {
         throw error.response.data as AuthError;
       }
-      throw { message: 'Network error. Please try again.' } as AuthError;
+      throw { message: "Network error. Please try again." } as AuthError;
     }
   },
 
@@ -52,10 +53,12 @@ export const authService = {
    */
   logout: async (): Promise<void> => {
     try {
-      await axiosClient.post('/Accounts/Logout', null, { withCredentials: true });
-      localStorage.removeItem('user');
+      await axiosClient.post("/Accounts/Logout", null, {
+        withCredentials: true,
+      });
+      localStorage.removeItem("user");
     } catch (error) {
-      localStorage.removeItem('user');
+      localStorage.removeItem("user");
       throw error;
     }
   },
@@ -64,7 +67,7 @@ export const authService = {
    * Lấy thông tin user hiện tại
    */
   getCurrentUser: () => {
-    const userStr = localStorage.getItem('user');
+    const userStr = localStorage.getItem("user");
     if (userStr) {
       try {
         return JSON.parse(userStr) as { username: string; roles: string[] };
@@ -79,7 +82,7 @@ export const authService = {
    * Kiểm tra đã đăng nhập
    */
   isAuthenticated: (): boolean => {
-    return !!localStorage.getItem('user');
+    return !!localStorage.getItem("user");
   },
 
   /**
