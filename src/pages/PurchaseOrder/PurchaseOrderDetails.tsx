@@ -19,8 +19,7 @@ export default function PurchaseOrderDetails() {
       try {
         setLoading(true);
         const response = await axiosClient.get<ViewPurchaseOrderDto>(
-          `/PurchaseOrders/${id}`,
-          { withCredentials: true }
+          `/PurchaseOrders/${id}`
         );
         console.log(response.data);
         setOrder(response.data);
@@ -90,17 +89,23 @@ export default function PurchaseOrderDetails() {
       {/* Order Header */}
       <div className="bg-white dark:bg-white/[0.03] rounded-lg p-6 shadow-sm">
         <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
-          Purchase Order #{order.purchaseOrderId}
+          Purchase Order #{order.orderId}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <p className="text-gray-600 dark:text-gray-400">
               <span className="font-medium">Supplier: </span>
-              {order.supplierName}
+              {order.supplierName} (ID: {order.supplierId})
             </p>
             <p className="text-gray-600 dark:text-gray-400">
               <span className="font-medium">Contact: </span>
               {order.contact}
+            </p>
+            <p className="text-gray-600 dark:text-gray-400">
+              <span className="font-medium">Handled by: </span>
+              {order.staffName
+                ? `${order.staffName} (ID: ${order.staffId})`
+                : "N/A"}
             </p>
           </div>
           <div>
@@ -132,6 +137,9 @@ export default function PurchaseOrderDetails() {
             <thead>
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Product ID
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Product
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -148,6 +156,9 @@ export default function PurchaseOrderDetails() {
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {order.purchaseOrderDetails.map((item, index) => (
                 <tr key={index}>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-400">
+                    #{item.productId}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-400">
                     {item.productName}
                   </td>
@@ -166,7 +177,7 @@ export default function PurchaseOrderDetails() {
             <tfoot>
               <tr>
                 <td
-                  colSpan={3}
+                  colSpan={4}
                   className="px-6 py-4 text-right font-medium text-gray-700 dark:text-gray-300"
                 >
                   Total:

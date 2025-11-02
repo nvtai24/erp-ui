@@ -21,6 +21,7 @@ export default function PurchaseOrders() {
   const [dateFrom, setDateFrom] = useState<string>("");
   const [dateTo, setDateTo] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const ordersPerPage = 10;
 
   const handleViewOrder = (orderId: number) => {
@@ -28,11 +29,17 @@ export default function PurchaseOrders() {
   };
 
   useEffect(() => {
+    setLoading(true);
     axiosClient
       .get<ViewPurchaseOrderDto[]>("/PurchaseOrders")
       .then((response) => {
         console.log("Purchase Orders API response:", response.data);
         setPurchaseOrders(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to load purchase orders:", error);
+        setLoading(false);
       });
   }, []);
 
@@ -41,7 +48,7 @@ export default function PurchaseOrders() {
       // Search filter
       const searchMatch =
         searchTerm === "" ||
-        order.purchaseOrderId.toString().includes(searchTerm) ||
+        order.orderId.toString().includes(searchTerm) ||
         order.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         order.contact.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -75,6 +82,14 @@ export default function PurchaseOrders() {
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -151,9 +166,9 @@ export default function PurchaseOrders() {
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {currentOrders.map((order) => (
-                <TableRow key={order.purchaseOrderId}>
+                <TableRow key={order.orderId}>
                   <TableCell className="px-5 py-4 sm:px-6 text-start">
-                    #{order.purchaseOrderId}
+                    #{order.orderId}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {order.supplierName}
@@ -177,7 +192,7 @@ export default function PurchaseOrders() {
                     <div className="flex space-x-2">
                       <button
                         className="p-2 text-blue-600 hover:text-blue-800"
-                        onClick={() => handleViewOrder(order.purchaseOrderId)}
+                        onClick={() => handleViewOrder(order.orderId)}
                       >
                         View
                       </button>

@@ -1,15 +1,25 @@
 export interface ViewPurchaseOrderDto {
-  purchaseOrderId: number;
+  staffId: number | null;
+  orderId: number;
+  orderDate: string;
+  supplierId: number;
   supplierName: string;
   contact: string;
-  orderDate: string;
+  staffName: string | null;
   purchaseOrderDetails: PurchaseOrderDetail[];
 }
 
+export interface Supplier {
+  supplierId: number;
+  supplierName: string;
+  contact: string;
+  address: string;
+}
+
 export interface PurchaseOrderDetail {
+  detailId: number;
   productId: number;
-  productName?: string;
-  categoryId?: number;
+  productName: string;
   quantity: number;
   unitPrice: number;
 }
