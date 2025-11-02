@@ -1,51 +1,45 @@
-// components/auth/ProtectedRoute.tsx
-import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router";
 import { authService } from "../../services/authService";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: string;
+  requiredPermission?: string;
+  requiredPermissions?: string[];
+  requireAll?: boolean; // true: cần tất cả permissions, false: cần ít nhất 1
+  requiredRole?: string; // Keep for backward compatibility
 }
 
-export default function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
+export default function ProtectedRoute({ 
+  children, 
+  requiredPermission,
+  requiredPermissions,
+  requireAll = false,
+  requiredRole 
+}: ProtectedRouteProps) {
   const location = useLocation();
-  const [loading, setLoading] = useState(true); // đang kiểm tra
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [hasRole, setHasRole] = useState(false);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const authenticated = await authService.isAuthenticated();
-        setIsAuthenticated(authenticated);
-
-        if (authenticated && requiredRole) {
-          const roleOk = await authService.hasRole(requiredRole);
-          setHasRole(roleOk);
-        } else if (authenticated) {
-          setHasRole(true); // đã login, không cần role
-        }
-      } catch (error) {
-        setIsAuthenticated(false);
-        setHasRole(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, [requiredRole]);
-
-  if (loading) return <div>Loading...</div>;
-
-  if (!isAuthenticated) {
-    // Chưa login → redirect signin
+  // Kiểm tra đã đăng nhập
+  if (!authService.isAuthenticated()) {
     return <Navigate to={`/signin?redirect=${location.pathname}`} replace />;
   }
 
-  if (!hasRole) {
-    // Đăng nhập nhưng không có quyền → redirect forbidden
+  // Kiểm tra quyền
+  let hasAccess = true;
+
+  if (requiredPermission) {
+    // Kiểm tra 1 permission cụ thể
+    hasAccess = authService.hasPermission(requiredPermission);
+  } else if (requiredPermissions && requiredPermissions.length > 0) {
+    // Kiểm tra nhiều permissions
+    hasAccess = requireAll
+      ? authService.hasAllPermissions(requiredPermissions)
+      : authService.hasAnyPermission(requiredPermissions);
+  } else if (requiredRole) {
+    // Fallback: kiểm tra role (backward compatibility)
+    hasAccess = authService.hasRole(requiredRole);
+  }
+
+  if (!hasAccess) {
     return <Navigate to="/forbidden" replace />;
   }
 

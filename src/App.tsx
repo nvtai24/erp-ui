@@ -34,6 +34,7 @@ import OrderDetail from "./pages/SalesOrder/OrderDetails";
 import PurchaseOrders from "./pages/PurchaseOrder/PurchaseOrders";
 import CreatePurchaseOrder from "./pages/PurchaseOrder/CreatePurchaseOrder";
 import PurchaseOrderDetails from "./pages/PurchaseOrder/PurchaseOrderDetails";
+import RoleDetail from "./components/role/RoleDetail";
 
 export default function App() {
   // Test API
@@ -68,6 +69,14 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            {/* <Route
+              path="/roles"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <Roles />
+                </ProtectedRoute>
+              }
+            /> */}
             <Route
               path="/roles"
               element={
@@ -77,17 +86,36 @@ export default function App() {
               }
             />
 
+            <Route
+              path="/roles/:roleName"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <RoleDetail />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
             <Route path="/products" element={<Products />} />
-            <Route
+
+            {/* <Route
               path="/categories"
               element={
                 <ProtectedRoute requiredRole="Admin">
                   <Categories />
                 </ProtectedRoute>
               }
+            /> */}
+
+            <Route
+              path="/categories"
+              element={
+                <ProtectedRoute requiredPermissions={["Category_View"]}>
+                  <Categories />
+                </ProtectedRoute>
+              }
             />
+
             <Route
               path="/warehouses"
               element={

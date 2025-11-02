@@ -9,6 +9,7 @@ import {
   useToast,
 } from "../../components/ui/toast/ToastProvider";
 import { confirmDelete } from "../../components/ui/alert/ConfirmDialog";
+import { authService } from "../../services/authService";
 
 function CategoriesContent() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
