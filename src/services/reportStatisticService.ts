@@ -1,7 +1,7 @@
 import axiosClient from "../utils/axiosClient";
 import {
   WarehouseStatistic,
-  ProductStockDetail,
+  ProductStockDTO,
   StockHistory,
   CustomerOrder,
   CustomerOrderDetail,
@@ -25,8 +25,8 @@ const reportStatisticService = {
 
   getProductStockDetail: async (
     params: WarehouseStatisticRequestDTO
-  ): Promise<ReportApiResponse<ProductStockDetail[]>> => {
-    const res = await axiosClient.get<ReportApiResponse<ProductStockDetail[]>>(
+  ): Promise<ReportApiResponse<ProductStockDTO[]>> => {
+    const res = await axiosClient.get<ReportApiResponse<ProductStockDTO[]>>(
       "/warehouse-report/product-stock-detail",
       { params }
     );

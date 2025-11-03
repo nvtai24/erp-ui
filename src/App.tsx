@@ -26,22 +26,17 @@ import Warehouses from "./pages/Warehouses/Warehouses";
 import Customers from "./pages/Customers/Customers";
 import Suppliers from "./pages/Suppliers/Suppliers";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-<<<<<<< HEAD
 import OrderDetail from "./pages/Orders/OrderDetails";
 import WarehouseStatisticsReport from "./pages/Reports/WarehouseStatisticsReport";
-import ProductStockDetailReport from "./pages/Reports/ProductStockDetailReport";
 import StockHistoryReport from "./pages/Reports/StockHistoryReport";
 import CustomerOrdersReport from "./pages/Reports/CustomerOrdersReport";
 import CustomerOrderDetailPage from "./pages/Reports/CustomerOrderDetailPage";
-=======
 import Roles from "./pages/Roles/Roles";
 import Accounts from "./pages/Accounts/Accounts";
 import Orders from "./pages/SalesOrder/Orders";
 import CreateOrder from "./pages/SalesOrder/CreateOrder";
-import OrderDetail from "./pages/SalesOrder/OrderDetails";
 import PurchaseOrders from "./pages/PurchaseOrder/PurchaseOrders";
 import CreatePurchaseOrder from "./pages/PurchaseOrder/CreatePurchaseOrder";
->>>>>>> 92f9053d4002411937918279d083befb13569667
 
 export default function App() {
   // Test API
@@ -144,7 +139,6 @@ export default function App() {
             <Route path="/orders/create" element={<CreateOrder />} />
             <Route path="/orders/:id" element={<OrderDetail />} />
 
-<<<<<<< HEAD
             {/* Reports */}
             <Route
               path="/reports/warehouse-statistics"
@@ -152,12 +146,7 @@ export default function App() {
                   <WarehouseStatisticsReport />
               }
             />
-            <Route
-              path="/reports/product-stock-detail"
-              element={
-                  <ProductStockDetailReport />
-              }
-            />
+            
             <Route
               path="/reports/stock-history"
               element={
@@ -176,11 +165,9 @@ export default function App() {
                   <CustomerOrderDetailPage />
               }
             />
-=======
             {/* Purchase Orders */}
             <Route path="/purchases" element={<PurchaseOrders />} />
             <Route path="/purchases/create" element={<CreatePurchaseOrder />} />
->>>>>>> 92f9053d4002411937918279d083befb13569667
           </Route>
 
           {/* Auth Layout */}

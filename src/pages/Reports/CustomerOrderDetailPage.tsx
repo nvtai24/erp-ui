@@ -1,3 +1,4 @@
+// pages/reports/CustomerOrderDetailPage.tsx
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import PageMeta from "../../components/common/PageMeta";
@@ -22,7 +23,7 @@ export default function CustomerOrderDetailPage() {
           Number(orderId)
         );
 
-        if (response.success) {
+        if (response.success && response.data) {
           setOrder(response.data);
         } else {
           setError(response.message || "Failed to fetch order details");
@@ -37,6 +38,14 @@ export default function CustomerOrderDetailPage() {
 
     fetchOrderDetail();
   }, [orderId]);
+
+  const formatDate = (dateString: string) => {
+    try {
+      return new Date(dateString).toLocaleDateString();
+    } catch {
+      return dateString;
+    }
+  };
 
   if (isLoading) {
     return (
@@ -87,10 +96,16 @@ export default function CustomerOrderDetailPage() {
     return colors[status] || "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
   };
 
+  const subtotal = order.orderDetails?.reduce(
+    (sum, item) => sum + item.totalPrice,
+    0
+  ) || 0;
+  const tax = subtotal * 0.1;
+
   return (
     <>
       <PageMeta
-        title={`Order ${order.orderNo} | Report`}
+        title={`Order #${order.salesOrderId} | Report`}
         description="Order details"
       />
 
@@ -105,9 +120,9 @@ export default function CustomerOrderDetailPage() {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Order Number</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Order ID</p>
               <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                {order.orderNo}
+                #{order.salesOrderId}
               </p>
             </div>
             <div>
@@ -119,7 +134,7 @@ export default function CustomerOrderDetailPage() {
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">Order Date</p>
               <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                {new Date(order.orderDate).toLocaleDateString()}
+                {formatDate(order.orderDate)}
               </p>
             </div>
             <div>
@@ -157,31 +172,39 @@ export default function CustomerOrderDetailPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {order.items.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    >
-                      <td className="px-4 py-4 text-gray-900 dark:text-gray-100">
-                        {item.productName}
-                      </td>
-                      <td className="px-4 py-4 text-center text-gray-900 dark:text-gray-100">
-                        {item.quantity}
-                      </td>
-                      <td className="px-4 py-4 text-right text-gray-900 dark:text-gray-100">
-                        ${item.unitPrice.toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
-                      </td>
-                      <td className="px-4 py-4 text-right font-medium text-gray-900 dark:text-gray-100">
-                        ${item.lineTotal.toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
+                  {order.orderDetails && order.orderDetails.length > 0 ? (
+                    order.orderDetails.map((item, index) => (
+                      <tr
+                        key={index}
+                        className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+                      >
+                        <td className="px-4 py-4 text-gray-900 dark:text-gray-100">
+                          {item.productName}
+                        </td>
+                        <td className="px-4 py-4 text-center text-gray-900 dark:text-gray-100">
+                          {item.quantity}
+                        </td>
+                        <td className="px-4 py-4 text-right text-gray-900 dark:text-gray-100">
+                          ${item.unitPrice.toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </td>
+                        <td className="px-4 py-4 text-right font-medium text-gray-900 dark:text-gray-100">
+                          ${item.totalPrice.toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
+                        No items in this order
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -193,7 +216,7 @@ export default function CustomerOrderDetailPage() {
                 <div className="flex justify-between mb-2">
                   <p className="text-gray-600 dark:text-gray-400">Subtotal:</p>
                   <p className="text-gray-900 dark:text-white">
-                    ${(order.totalAmount * 0.9).toLocaleString("en-US", {
+                    ${subtotal.toLocaleString("en-US", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
@@ -202,7 +225,7 @@ export default function CustomerOrderDetailPage() {
                 <div className="flex justify-between mb-2">
                   <p className="text-gray-600 dark:text-gray-400">Tax (10%):</p>
                   <p className="text-gray-900 dark:text-white">
-                    ${(order.totalAmount * 0.1).toLocaleString("en-US", {
+                    ${tax.toLocaleString("en-US", {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}

@@ -1,22 +1,27 @@
 // types/reportStatistic.ts
+
 export interface WarehouseStatistic {
   warehouseId: number;
   warehouseName: string;
-  totalQuantity: number;
-  totalValue: number;
-  productCount: number;
+  location: string;
+  totalImport: number;
+  totalExport: number;
+  damagedItems: number;
+  currentStock: number;
+  fromDate: string;
+  toDate: string;
 }
 
-export interface ProductStockDetail {
+export interface ProductStockDTO {
   productId: number;
   productName: string;
-  sku: string;
-  categoryName: string;
-  quantity: number;
-  unitPrice: number;
-  totalValue: number;
   warehouseId: number;
   warehouseName: string;
+  quantityImport: number;
+  quantityExport: number;
+  currentStock: number;
+  damagedQuantity: number;
+  totalValue: number;
 }
 
 export interface StockHistory {
@@ -24,54 +29,66 @@ export interface StockHistory {
   productId: number;
   productName: string;
   quantity: number;
-  transactionType: 'IN' | 'OUT';
+  transactionType: 'IMPORT' | 'EXPORT';
   transactionDate: string;
   warehouseId: number;
+  warehouseName: string;
+  reference: string;
 }
 
+export interface CustomerOrderDetailItem {
+  detailId: number;
+  productId: number;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
+// List view - không cần orderDetails
 export interface CustomerOrder {
-  orderId: number;
-  orderNo: string;
-  customerName: string;
+  salesOrderId: number;
   orderDate: string;
+  customerId: number;
+  customerName: string;
+  status: string;
   totalAmount: number;
-  status: 'Pending' | 'Confirmed' | 'Shipped' | 'Delivered' | 'Cancelled';
-  itemCount: number;
 }
 
+// Detail view - có orderDetails
 export interface CustomerOrderDetail {
-  orderId: number;
-  orderNo: string;
-  customerName: string;
+  salesOrderId: number;
   orderDate: string;
-  totalAmount: number;
+  customerId: number;
+  customerName: string;
   status: string;
-  items: {
-    productName: string;
-    quantity: number;
-    unitPrice: number;
-    lineTotal: number;
-  }[];
+  totalAmount: number;
+  orderDetails: CustomerOrderDetailItem[];
 }
 
 export interface WarehouseStatisticRequestDTO {
   warehouseId?: number;
-  pageIndex: number;
-  pageSize: number;
+  productId?: number;
+  fromDate?: string;
+  toDate?: string;
 }
 
 export interface StockHistoryRequestDTO {
-  startDate?: string;
-  endDate?: string;
+  warehouseId?: number;
+  productId?: number;
+  fromDate?: string;
+  toDate?: string;
   transactionType?: string;
-  pageIndex: number;
+  pageNumber: number;
   pageSize: number;
 }
 
 export interface CustomerOrderRequestDTO {
   customerId?: number;
   status?: string;
-  pageIndex: number;
+  fromDate?: string;
+  toDate?: string;
+  pageNumber: number;
   pageSize: number;
 }
 
@@ -83,6 +100,9 @@ export interface ReportApiResponse<T> {
     totalItems: number;
     pageIndex: number;
     pageSize: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
   };
 }
 
@@ -94,5 +114,3 @@ export interface DashboardSummary {
   totalOrders: number;
   pendingOrders: number;
 }
-
-

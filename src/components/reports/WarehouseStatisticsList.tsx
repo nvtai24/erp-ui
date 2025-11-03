@@ -46,21 +46,27 @@ export default function WarehouseStatisticsTable({
               <th className="px-4 py-3 text-left font-semibold text-gray-900 dark:text-white">
                 Warehouse Name
               </th>
-              <th className="px-4 py-3 text-right font-semibold text-gray-900 dark:text-white">
-                Total Quantity
+              <th className="px-4 py-3 text-left font-semibold text-gray-900 dark:text-white">
+                Location
               </th>
               <th className="px-4 py-3 text-right font-semibold text-gray-900 dark:text-white">
-                Inventory Value
+                Total Import
               </th>
               <th className="px-4 py-3 text-right font-semibold text-gray-900 dark:text-white">
-                Product Count
+                Total Export
+              </th>
+              <th className="px-4 py-3 text-right font-semibold text-gray-900 dark:text-white">
+                Damaged Items
+              </th>
+              <th className="px-4 py-3 text-right font-semibold text-gray-900 dark:text-white">
+                Current Stock
               </th>
             </tr>
           </thead>
           <tbody>
             {data.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
+                <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
                   {isLoading ? "Loading..." : "No data available"}
                 </td>
               </tr>
@@ -73,17 +79,20 @@ export default function WarehouseStatisticsTable({
                   <td className="px-4 py-4 text-gray-900 dark:text-gray-100">
                     {warehouse.warehouseName}
                   </td>
-                  <td className="px-4 py-4 text-right text-gray-900 dark:text-gray-100">
-                    {warehouse.totalQuantity.toLocaleString()}
+                  <td className="px-4 py-4 text-gray-900 dark:text-gray-100">
+                    {warehouse.location}
+                  </td>
+                  <td className="px-4 py-4 text-right text-green-600 dark:text-green-400">
+                    {warehouse.totalImport.toLocaleString()}
+                  </td>
+                  <td className="px-4 py-4 text-right text-blue-600 dark:text-blue-400">
+                    {warehouse.totalExport.toLocaleString()}
+                  </td>
+                  <td className="px-4 py-4 text-right text-red-600 dark:text-red-400">
+                    {warehouse.damagedItems.toLocaleString()}
                   </td>
                   <td className="px-4 py-4 text-right font-medium text-gray-900 dark:text-gray-100">
-                    ${warehouse.totalValue.toLocaleString("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                  </td>
-                  <td className="px-4 py-4 text-right text-gray-900 dark:text-gray-100">
-                    {warehouse.productCount}
+                    {warehouse.currentStock.toLocaleString()}
                   </td>
                 </tr>
               ))
@@ -93,20 +102,58 @@ export default function WarehouseStatisticsTable({
       </div>
 
       {totalPages > 1 && (
-        <div className="mt-4 flex justify-center gap-2">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <button
-              key={page}
-              onClick={() => onPageChange(page)}
-              className={`px-3 py-2 rounded ${
-                page === currentPage
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-              }`}
+        <div className="mt-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              Rows per page:
+            </span>
+            <select
+              value={pageSize}
+              onChange={(e) => onPageSizeChange(Number(e.target.value))}
+              className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             >
-              {page}
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+            </select>
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => onPageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-3 py-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
             </button>
-          ))}
+            
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => onPageChange(page)}
+                className={`px-3 py-2 rounded ${
+                  page === currentPage
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-3 py-2 rounded bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
+
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            Page {currentPage} of {totalPages}
+          </span>
         </div>
       )}
     </div>
