@@ -22,7 +22,7 @@ import { Warehouse } from "lucide-react";
 import { ChartBarStacked } from "lucide-react";
 import { Package2 } from "lucide-react";
 import { authService } from "../services/authService";
-import { Users } from 'lucide-react';
+import { Users } from "lucide-react";
 
 type NavItem = {
   name: string;
@@ -47,7 +47,7 @@ const navItems: NavItem[] = [
   {
     name: "Roles & Accounts",
     icon: <Users />,
-    requiredRole: "Admin", 
+    requiredRole: "Admin",
     subItems: [
       {
         name: "Accounts",
@@ -74,8 +74,8 @@ const navItems: NavItem[] = [
     name: "Purchase",
     icon: <BoxCubeIcon />,
     subItems: [
-      { name: "View Purchases", path: "/purchases", pro: false },
-      { name: "Create Purchase", path: "/purchases/create", pro: false },
+      { name: "View Purchases", path: "/purchase-orders", pro: false },
+      { name: "Create Purchase", path: "/purchase-orders/create", pro: false },
     ],
   },
 

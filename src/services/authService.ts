@@ -32,18 +32,19 @@ export const authService = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
     try {
       const response = await axiosClient.post<LoginResponse>(
-        '/Accounts/Login',
+        "/Accounts/Login",
         credentials,
         { withCredentials: true }
       );
-
-      // Lưu thông tin user vào localStorage
       if (response.data) {
-        localStorage.setItem('user', JSON.stringify({
-          username: response.data.username,
-          roles: response.data.roles,
-          permissions: response.data.permissions || []
-        }));
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            username: response.data.username,
+            roles: response.data.roles,
+            permissions: response.data.permissions || [],
+          })
+        );
       }
 
       return response.data;
@@ -51,7 +52,7 @@ export const authService = {
       if (error.response?.data) {
         throw error.response.data as AuthError;
       }
-      throw { message: 'Network error. Please try again.' } as AuthError;
+      throw { message: "Network error. Please try again." } as AuthError;
     }
   },
 
@@ -60,10 +61,12 @@ export const authService = {
    */
   logout: async (): Promise<void> => {
     try {
-      await axiosClient.post('/Accounts/Logout', null, { withCredentials: true });
-      localStorage.removeItem('user');
+      await axiosClient.post("/Accounts/Logout", null, {
+        withCredentials: true,
+      });
+      localStorage.removeItem("user");
     } catch (error) {
-      localStorage.removeItem('user');
+      localStorage.removeItem("user");
       throw error;
     }
   },
@@ -72,7 +75,7 @@ export const authService = {
    * Lấy thông tin user hiện tại
    */
   getCurrentUser: (): UserInfo | null => {
-    const userStr = localStorage.getItem('user');
+    const userStr = localStorage.getItem("user");
     if (userStr) {
       try {
         return JSON.parse(userStr) as UserInfo;
@@ -87,7 +90,7 @@ export const authService = {
    * Kiểm tra đã đăng nhập
    */
   isAuthenticated: (): boolean => {
-    return !!localStorage.getItem('user');
+    return !!localStorage.getItem("user");
   },
 
   /**
@@ -112,7 +115,9 @@ export const authService = {
   hasAnyPermission: (permissions: string[]): boolean => {
     const user = authService.getCurrentUser();
     if (!user?.permissions) return false;
-    return permissions.some(permission => user.permissions.includes(permission));
+    return permissions.some((permission) =>
+      user.permissions.includes(permission)
+    );
   },
 
   /**
@@ -121,7 +126,9 @@ export const authService = {
   hasAllPermissions: (permissions: string[]): boolean => {
     const user = authService.getCurrentUser();
     if (!user?.permissions) return false;
-    return permissions.every(permission => user.permissions.includes(permission));
+    return permissions.every((permission) =>
+      user.permissions.includes(permission)
+    );
   },
 
   /**
@@ -130,5 +137,5 @@ export const authService = {
   getPermissions: (): string[] => {
     const user = authService.getCurrentUser();
     return user?.permissions ?? [];
-  }
+  },
 };

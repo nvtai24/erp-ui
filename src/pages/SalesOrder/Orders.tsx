@@ -19,6 +19,7 @@ export default function Orders() {
   const [dateFrom, setDateFrom] = useState<string>("");
   const [dateTo, setDateTo] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const ordersPerPage = 10;
 
   const handleViewOrder = (orderId: number) => {
@@ -26,10 +27,19 @@ export default function Orders() {
   };
 
   useEffect(() => {
-    axiosClient.get<ViewOrderDto[]>("/orders").then((response) => {
-      console.log("Orders API response:", response.data);
-      setOrders(response.data);
-    });
+    setLoading(true);
+    axiosClient
+      .get<ViewOrderDto[]>("/SalesOrders")
+      .then((response) => {
+        console.log("SalesOrders API response:", response.data);
+        setOrders(response.data);
+      })
+      .catch((error) => {
+        console.error("Failed to load orders:", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const filteredOrders = useMemo(() => {
@@ -71,6 +81,14 @@ export default function Orders() {
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
