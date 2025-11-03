@@ -212,7 +212,7 @@ function SuppliersContent() {
           fetchSuppliers={fetchSuppliers}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          itemsPerPage={5}
+          itemsPerPage={10}
         />
       </div>
 

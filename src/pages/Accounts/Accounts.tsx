@@ -242,7 +242,7 @@ function AccountsContent() {
             setSelectedAccount(acc);
             setShowAssignRole(true);
           }}
-          itemsPerPage={5}
+          itemsPerPage={10}
         />
       </div>
 
