@@ -37,6 +37,8 @@ import Orders from "./pages/SalesOrder/Orders";
 import CreateOrder from "./pages/SalesOrder/CreateOrder";
 import PurchaseOrders from "./pages/PurchaseOrder/PurchaseOrders";
 import CreatePurchaseOrder from "./pages/PurchaseOrder/CreatePurchaseOrder";
+import PurchaseOrderDetails from "./pages/PurchaseOrder/PurchaseOrderDetails";
+import RoleDetail from "./components/role/RoleDetail";
 
 export default function App() {
   // Test API
@@ -71,6 +73,14 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            {/* <Route
+              path="/roles"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <Roles />
+                </ProtectedRoute>
+              }
+            /> */}
             <Route
               path="/roles"
               element={
@@ -80,17 +90,36 @@ export default function App() {
               }
             />
 
+            <Route
+              path="/roles/:roleName"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <RoleDetail />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
             <Route path="/products" element={<Products />} />
-            <Route
+
+            {/* <Route
               path="/categories"
               element={
                 <ProtectedRoute requiredRole="Admin">
                   <Categories />
                 </ProtectedRoute>
               }
+            /> */}
+
+            <Route
+              path="/categories"
+              element={
+                <ProtectedRoute requiredPermissions={["Category_View"]}>
+                  <Categories />
+                </ProtectedRoute>
+              }
             />
+
             <Route
               path="/warehouses"
               element={
@@ -166,8 +195,15 @@ export default function App() {
               }
             />
             {/* Purchase Orders */}
-            <Route path="/purchases" element={<PurchaseOrders />} />
-            <Route path="/purchases/create" element={<CreatePurchaseOrder />} />
+            <Route path="/purchase-orders" element={<PurchaseOrders />} />
+            <Route
+              path="/purchase-orders/create"
+              element={<CreatePurchaseOrder />}
+            />
+            <Route
+              path="/purchase-orders/:id"
+              element={<PurchaseOrderDetails />}
+            />
           </Route>
 
           {/* Auth Layout */}

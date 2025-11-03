@@ -1,32 +1,32 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosClient from "../../utils/axiosClient";
-import { ViewOrderDto } from "../../types/salesOrder";
+import { ViewPurchaseOrderDto } from "../../types/purchaseOrder";
 
-export default function OrderDetail() {
+export default function PurchaseOrderDetails() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [order, setOrder] = useState<ViewOrderDto | null>(null);
+  const [order, setOrder] = useState<ViewPurchaseOrderDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const handleBack = () => {
-    navigate("/orders");
+    navigate("/purchase-orders");
   };
 
   useEffect(() => {
     const fetchOrderDetail = async () => {
       try {
         setLoading(true);
-        const response = await axiosClient.get<ViewOrderDto>(
-          `/SalesOrders/${id}`
+        const response = await axiosClient.get<ViewPurchaseOrderDto>(
+          `/PurchaseOrders/${id}`
         );
         console.log(response.data);
         setOrder(response.data);
         setError(null);
       } catch (err) {
-        console.error("Error fetching order details:", err);
-        setError("Failed to load order details");
+        console.error("Error fetching purchase order details:", err);
+        setError("Failed to load purchase order details");
       } finally {
         setLoading(false);
       }
@@ -56,7 +56,7 @@ export default function OrderDetail() {
   if (!order) {
     return (
       <div className="text-center text-gray-500 p-4">
-        <p>Order not found</p>
+        <p>Purchase order not found</p>
       </div>
     );
   }
@@ -89,13 +89,13 @@ export default function OrderDetail() {
       {/* Order Header */}
       <div className="bg-white dark:bg-white/[0.03] rounded-lg p-6 shadow-sm">
         <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
-          Order #{order.orderId}
+          Purchase Order #{order.orderId}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <p className="text-gray-600 dark:text-gray-400">
-              <span className="font-medium">Customer: </span>
-              {order.customerName}
+              <span className="font-medium">Supplier: </span>
+              {order.supplierName} (ID: {order.supplierId})
             </p>
             <p className="text-gray-600 dark:text-gray-400">
               <span className="font-medium">Contact: </span>
@@ -115,7 +115,7 @@ export default function OrderDetail() {
             </p>
             <p className="text-gray-600 dark:text-gray-400">
               <span className="font-medium">Total Amount: </span>
-              {order.orderDetails
+              {order.purchaseOrderDetails
                 .reduce(
                   (total, item) => total + item.quantity * item.unitPrice,
                   0
@@ -154,7 +154,7 @@ export default function OrderDetail() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {order.orderDetails.map((item, index) => (
+              {order.purchaseOrderDetails.map((item, index) => (
                 <tr key={index}>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-400">
                     #{item.productId}
@@ -183,7 +183,7 @@ export default function OrderDetail() {
                   Total:
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-700 dark:text-gray-300">
-                  {order.orderDetails
+                  {order.purchaseOrderDetails
                     .reduce(
                       (total, item) => total + item.quantity * item.unitPrice,
                       0

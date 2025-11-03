@@ -20,7 +20,8 @@ import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
 import { Warehouse, Package2, BarChart3 } from "lucide-react";
 import { authService } from "../services/authService";
-  
+import { Users } from "lucide-react";
+
 type NavItem = {
   name: string;
   icon: React.ReactNode;
@@ -42,13 +43,45 @@ const navItems: NavItem[] = [
     path: "/",
   },
   {
-    name: "Orders",
+    name: "Roles & Accounts",
+    icon: <Users />,
+    requiredRole: "Admin",
+    subItems: [
+      {
+        name: "Accounts",
+        path: "/accounts",
+        requiredRole: "Admin",
+      },
+      {
+        name: "Roles",
+        path: "/roles",
+        requiredRole: "Admin",
+      },
+    ],
+  },
+  {
+    name: "Sale",
     icon: <BoxCubeIcon />,
     subItems: [
       { name: "View Orders", path: "/orders", pro: false },
       { name: "Create Order", path: "/orders/create", pro: false },
     ],
   },
+
+  {
+    name: "Purchase",
+    icon: <BoxCubeIcon />,
+    subItems: [
+      { name: "View Purchases", path: "/purchase-orders", pro: false },
+      { name: "Create Purchase", path: "/purchase-orders/create", pro: false },
+    ],
+  },
+
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Calendar",
+  //   path: "/calendar",
+  // },
   {
     icon: <UserCircleIcon />,
     name: "User Profile",
@@ -173,10 +206,22 @@ const AppSidebar: React.FC = () => {
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
+  // const isActive = (path: string) => location.pathname === path;
+  // const isActive = useCallback(
+  //   (path: string) => location.pathname === path,
+  //   [location.pathname]
+  // );
+
   const isActive = useCallback(
-    (path: string) => location.pathname === path,
-    [location.pathname]
-  );
+  (path: string) => {
+    if (path === "/roles" && location.pathname.startsWith("/roles/")) {
+      return true;
+    }
+    
+    return location.pathname === path;
+  },
+  [location.pathname]
+);
 
   useEffect(() => {
     let submenuMatched = false;

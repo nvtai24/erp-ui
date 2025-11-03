@@ -249,7 +249,7 @@ export default function CreatePurchaseOrder() {
       }, 2000);
       // Navigate after alert is hidden
       setTimeout(() => {
-        navigate("/purchases");
+        navigate("/purchase-orders");
       }, 2300);
     } catch (error) {
       console.error("Failed to create purchase order:", error);

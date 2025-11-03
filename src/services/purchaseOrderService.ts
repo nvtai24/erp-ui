@@ -20,7 +20,9 @@ export const purchaseOrderService = {
     return response.data;
   },
 
-  createPurchaseOrder: async (orderData: CreatePurchaseOrderDto): Promise<void> => {
-    await axiosClient.post("/purchaseorders", orderData);
-  }
+  createPurchaseOrder: async (
+    orderData: CreatePurchaseOrderDto
+  ): Promise<void> => {
+    await axiosClient.post("/PurchaseOrders", orderData);
+  },
 };

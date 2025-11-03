@@ -19,8 +19,6 @@ export interface Order {
   orderItems?: OrderItem[];
 }
 
-
-
 export interface OrderDetail {
   productId: number;
   quantity: number;
@@ -37,10 +35,12 @@ export interface CreateOrderDto {
 
 export interface ViewOrderDto {
   orderId: number;
-  orderDate: Date;
+  orderDate: string;
   customerId: number;
   customerName: string;
   contact: string;
+  staffId: number | null;
+  staffName: string;
   orderDetails: ViewOrderDetailDto[];
 }
 
