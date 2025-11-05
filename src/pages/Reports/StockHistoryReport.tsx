@@ -13,12 +13,9 @@ function StockHistoryContent() {
     toDate: "",
     transactionType: "",
   });
-  const [filterNameInput, setFilterNameInput] = useState("");
-  const [filterStatusInput, setFilterStatusInput] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
   const { addToast } = useToast();
 
-  // ✅ Giống Customer - fetchStockHistory nhận page và pageSize
   const fetchStockHistory = useCallback(
     async (page: number, pageSize: number) => {
       try {
@@ -74,7 +71,7 @@ function StockHistoryContent() {
             Stock History
           </h1>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            Track all inventory transactions
+            Track all inventory transactions with pricing details
           </p>
         </div>
 
@@ -111,7 +108,7 @@ function StockHistoryContent() {
               />
             </div>
 
-            {/* Transaction Type */}
+            {/* Transaction Type - ✅ BỎ DAMAGED */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Transaction Type
@@ -128,7 +125,6 @@ function StockHistoryContent() {
                 <option value="">All Transactions</option>
                 <option value="IMPORT">Import</option>
                 <option value="EXPORT">Export</option>
-                <option value="DAMAGED">Damaged</option>
               </select>
             </div>
 

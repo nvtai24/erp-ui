@@ -33,7 +33,8 @@ export interface StockHistory {
   transactionDate: string;
   warehouseId: number;
   warehouseName: string;
-  reference: string;
+  unitPrice: number; 
+  totalValue: number; 
 }
 
 export interface CustomerOrderDetailItem {
@@ -45,7 +46,6 @@ export interface CustomerOrderDetailItem {
   totalPrice: number;
 }
 
-// List view - không cần orderDetails
 export interface CustomerOrder {
   salesOrderId: number;
   orderDate: string;
@@ -55,7 +55,6 @@ export interface CustomerOrder {
   totalAmount: number;
 }
 
-// Detail view - có orderDetails
 export interface CustomerOrderDetail {
   salesOrderId: number;
   orderDate: string;

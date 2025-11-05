@@ -44,33 +44,27 @@ export default function StockHistoryTable({
       case "IMPORT":
         return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
       case "EXPORT":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
-      case "DAMAGED":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
       default:
         return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
     }
   };
 
-  // ✅ Tạo array số trang để render
   const getPageNumbers = () => {
     const pages = [];
-    const maxVisiblePages = 5; // Hiển thị tối đa 5 số trang
+    const maxVisiblePages = 5;
 
     if (totalPages <= maxVisiblePages) {
-      // Nếu tổng số trang ít, hiển thị hết
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Luôn hiển thị trang đầu
       pages.push(1);
 
       if (currentPage > 3) {
         pages.push("...");
       }
 
-      // Hiển thị các trang xung quanh trang hiện tại
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
 
@@ -82,7 +76,6 @@ export default function StockHistoryTable({
         pages.push("...");
       }
 
-      // Luôn hiển thị trang cuối
       if (totalPages > 1) {
         pages.push(totalPages);
       }
@@ -90,6 +83,13 @@ export default function StockHistoryTable({
 
     return pages;
   };
+
+  const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(value);
+};
 
   return (
     <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
@@ -107,6 +107,14 @@ export default function StockHistoryTable({
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Type
               </th>
+              {/* ✅ THÊM CỘT GIÁ */}
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Unit Price
+              </th>
+              {/* ✅ THÊM CỘT TỔNG GIÁ */}
+              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                Total Value
+              </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 Date
               </th>
@@ -118,13 +126,13 @@ export default function StockHistoryTable({
           <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
             {isLoading ? (
               <tr>
-                <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
                   Loading...
                 </td>
               </tr>
             ) : stockHistory.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
                   No stock history found
                 </td>
               </tr>
@@ -149,6 +157,14 @@ export default function StockHistoryTable({
                       {item.transactionType}
                     </span>
                   </td>
+                  {/* ✅ HIỂN THỊ GIÁ ĐƠN VỊ */}
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-900 dark:text-gray-100">
+                    {formatCurrency(item.unitPrice)}
+                  </td>
+                  {/* ✅ HIỂN THỊ TỔNG GIÁ TRỊ */}
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    {formatCurrency(item.totalValue)}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                     {new Date(item.transactionDate).toLocaleDateString()}
                   </td>
@@ -162,19 +178,16 @@ export default function StockHistoryTable({
         </table>
       </div>
 
-      {/* ✅ Pagination với số trang - Giống hình của bạn */}
+      {/* Pagination */}
       {totalItems > 0 && (
         <div className="bg-white dark:bg-gray-800 px-6 py-4 flex items-center justify-between border-t border-gray-200 dark:border-gray-700">
-          {/* Left: Info text */}
           <div className="text-sm text-gray-700 dark:text-gray-300">
             Showing <span className="font-medium">{startItem}</span> to{" "}
             <span className="font-medium">{endItem}</span> of{" "}
             <span className="font-medium">{totalItems}</span> results
           </div>
 
-          {/* Right: Page numbers */}
           <div className="flex items-center gap-1">
-            {/* Previous button */}
             <button
               onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
               disabled={currentPage === 1 || isLoading}
@@ -183,7 +196,6 @@ export default function StockHistoryTable({
               Prev
             </button>
 
-            {/* Page numbers */}
             {getPageNumbers().map((page, index) => {
               if (page === "...") {
                 return (
@@ -219,7 +231,6 @@ export default function StockHistoryTable({
               );
             })}
 
-            {/* Next button */}
             <button
               onClick={() =>
                 setCurrentPage((prev) => Math.min(totalPages, prev + 1))

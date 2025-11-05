@@ -18,9 +18,8 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { Warehouse, Package2, BarChart3 } from "lucide-react";
+import { Warehouse, Package2, BarChart3, Users, UserCog } from "lucide-react";
 import { authService } from "../services/authService";
-import { Users } from "lucide-react";
 
 type NavItem = {
   name: string;
@@ -60,6 +59,14 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    name: "Employees",
+    icon: <UserCog />,
+    subItems: [
+      { name: "View Employees", path: "/employees", pro: false },
+      { name: "Add Employee", path: "/employees/create", pro: false },
+    ],
+  },
+  {
     name: "Sale",
     icon: <BoxCubeIcon />,
     subItems: [
@@ -67,7 +74,6 @@ const navItems: NavItem[] = [
       { name: "Create Order", path: "/orders/create", pro: false },
     ],
   },
-
   {
     name: "Purchase",
     icon: <BoxCubeIcon />,
@@ -76,7 +82,6 @@ const navItems: NavItem[] = [
       { name: "Create Purchase", path: "/purchase-orders/create", pro: false },
     ],
   },
-
   // {
   //   icon: <CalenderIcon />,
   //   name: "Calendar",
@@ -206,22 +211,21 @@ const AppSidebar: React.FC = () => {
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // const isActive = (path: string) => location.pathname === path;
-  // const isActive = useCallback(
-  //   (path: string) => location.pathname === path,
-  //   [location.pathname]
-  // );
-
   const isActive = useCallback(
-  (path: string) => {
-    if (path === "/roles" && location.pathname.startsWith("/roles/")) {
-      return true;
-    }
-    
-    return location.pathname === path;
-  },
-  [location.pathname]
-);
+    (path: string) => {
+      if (path === "/roles" && location.pathname.startsWith("/roles/")) {
+        return true;
+      }
+      
+      // Handle employee routes
+      if (path === "/employees" && location.pathname.startsWith("/employees")) {
+        return location.pathname === "/employees";
+      }
+      
+      return location.pathname === path;
+    },
+    [location.pathname]
+  );
 
   useEffect(() => {
     let submenuMatched = false;

@@ -39,6 +39,9 @@ import PurchaseOrders from "./pages/PurchaseOrder/PurchaseOrders";
 import CreatePurchaseOrder from "./pages/PurchaseOrder/CreatePurchaseOrder";
 import PurchaseOrderDetails from "./pages/PurchaseOrder/PurchaseOrderDetails";
 import RoleDetail from "./components/role/RoleDetail";
+import EmployeeListPage from "./pages/Employees/EmployeeListPage";
+import EmployeeFormPage from "./pages/Employees/EmployeeFormPage";
+import EmployeeDetailPage from "./pages/Employees/EmployeeDetailPage";
 
 export default function App() {
   // Test API
@@ -171,28 +174,27 @@ export default function App() {
             {/* Reports */}
             <Route
               path="/reports/warehouse-statistics"
-              element={
-                  <WarehouseStatisticsReport />
-              }
+              element={<WarehouseStatisticsReport />}
             />
-            
+
             <Route
               path="/reports/stock-history"
-              element={
-                  <StockHistoryReport />
-              }
+              element={<StockHistoryReport />}
             />
-            <Route
-              path="/reports/orders"
-              element={
-                  <CustomerOrdersReport />
-              }
-            />
+            <Route path="/reports/orders" element={<CustomerOrdersReport />} />
             <Route
               path="/reports/orders/:orderId"
-              element={
-                  <CustomerOrderDetailPage />
-              }
+              element={<CustomerOrderDetailPage />}
+            />
+            <Route path="/employees" element={<EmployeeListPage />} />
+            <Route path="/employees/create" element={<EmployeeFormPage />} />
+            <Route
+              path="/employees/edit/:employeeId"
+              element={<EmployeeFormPage />}
+            />
+            <Route
+              path="/employees/:employeeId"
+              element={<EmployeeDetailPage />}
             />
             {/* Purchase Orders */}
             <Route path="/purchase-orders" element={<PurchaseOrders />} />

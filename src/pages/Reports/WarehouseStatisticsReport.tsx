@@ -99,21 +99,17 @@ function WarehouseStatisticsContent() {
 
   // Calculate totals for product summary
   const productTotals = products.reduce(
-    (acc, item) => ({
-      totalImport: acc.totalImport + item.quantityImport,
-      totalExport: acc.totalExport + item.quantityExport,
-      totalDamaged: acc.totalDamaged + item.damagedQuantity,
-      totalStock: acc.totalStock + item.currentStock,
-      totalValue: acc.totalValue + item.totalValue,
-    }),
-    {
-      totalImport: 0,
-      totalExport: 0,
-      totalDamaged: 0,
-      totalStock: 0,
-      totalValue: 0,
-    }
-  );
+  (acc, item) => ({
+    totalImport: acc.totalImport + item.quantityImport,
+    totalExport: acc.totalExport + item.quantityExport,
+    totalStock: acc.totalStock + item.currentStock,
+  }),
+  {
+    totalImport: 0,
+    totalExport: 0,
+    totalStock: 0,
+  }
+);
 
   const getStockStatus = (stock: number) => {
     if (stock === 0)
@@ -225,268 +221,238 @@ function WarehouseStatisticsContent() {
 
           <div className="p-6">
             {/* OVERVIEW TAB */}
-            {activeTab === "overview" && (
-              <div>
-                <div className="mb-4">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    Warehouse Overview
-                  </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Click "View Products" to see detailed inventory for each warehouse
-                  </p>
-                </div>
+          {/* OVERVIEW TAB */}
+{activeTab === "overview" && (
+  <div>
+    <div className="mb-4">
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+        Warehouse Overview
+      </h2>
+      <p className="text-sm text-gray-500 dark:text-gray-400">
+        Click "View Products" to see detailed inventory for each warehouse
+      </p>
+    </div>
 
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b-2 border-gray-200 dark:border-gray-700">
-                        <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
-                          Warehouse
-                        </th>
-                        <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
-                          Location
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
-                          Total Import
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
-                          Total Export
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
-                          Damaged
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
-                          Current Stock
-                        </th>
-                        <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {isLoadingWarehouses ? (
-                        <tr>
-                          <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
-                            Loading...
-                          </td>
-                        </tr>
-                      ) : warehouses.length === 0 ? (
-                        <tr>
-                          <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
-                            No data available
-                          </td>
-                        </tr>
-                      ) : (
-                        warehouses.map((warehouse) => (
-                          <tr
-                            key={warehouse.warehouseId}
-                            className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
-                          >
-                            <td className="px-4 py-4 font-medium text-gray-900 dark:text-gray-100">
-                              {warehouse.warehouseName}
-                            </td>
-                            <td className="px-4 py-4 text-gray-600 dark:text-gray-400">
-                              {warehouse.location}
-                            </td>
-                            <td className="px-4 py-4 text-right text-green-600 dark:text-green-400 font-medium">
-                              {warehouse.totalImport.toLocaleString()}
-                            </td>
-                            <td className="px-4 py-4 text-right text-blue-600 dark:text-blue-400 font-medium">
-                              {warehouse.totalExport.toLocaleString()}
-                            </td>
-                            <td className="px-4 py-4 text-right text-red-600 dark:text-red-400 font-medium">
-                              {warehouse.damagedItems.toLocaleString()}
-                            </td>
-                            <td className="px-4 py-4 text-right text-gray-900 dark:text-gray-100 font-bold">
-                              {warehouse.currentStock.toLocaleString()}
-                            </td>
-                            <td className="px-4 py-4 text-center">
-                              <button
-                                onClick={() => handleViewProducts(warehouse.warehouseId)}
-                                className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
-                              >
-                                View Products
-                              </button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b-2 border-gray-200 dark:border-gray-700">
+            <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
+              Warehouse
+            </th>
+            <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
+              Location
+            </th>
+            <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
+              Total Import
+            </th>
+            <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
+              Total Export
+            </th>
+            <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
+              Current Stock
+            </th>
+            <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+              Action
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {isLoadingWarehouses ? (
+            <tr>
+              <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                Loading...
+              </td>
+            </tr>
+          ) : warehouses.length === 0 ? (
+            <tr>
+              <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                No data available
+              </td>
+            </tr>
+          ) : (
+            warehouses.map((warehouse) => (
+              <tr
+                key={warehouse.warehouseId}
+                className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+              >
+                <td className="px-4 py-4 font-medium text-gray-900 dark:text-gray-100">
+                  {warehouse.warehouseName}
+                </td>
+                <td className="px-4 py-4 text-gray-600 dark:text-gray-400">
+                  {warehouse.location}
+                </td>
+                <td className="px-4 py-4 text-right text-green-600 dark:text-green-400 font-medium">
+                  {warehouse.totalImport.toLocaleString()}
+                </td>
+                <td className="px-4 py-4 text-right text-blue-600 dark:text-blue-400 font-medium">
+                  {warehouse.totalExport.toLocaleString()}
+                </td>
+                <td className="px-4 py-4 text-right text-gray-900 dark:text-gray-100 font-bold">
+                  {warehouse.currentStock.toLocaleString()}
+                </td>
+                <td className="px-4 py-4 text-center">
+                  <button
+                    onClick={() => handleViewProducts(warehouse.warehouseId)}
+                    className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                  >
+                    View Products
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
 
-            {/* PRODUCTS TAB */}
-            {activeTab === "products" && (
-              <div>
-                {/* Filter by Warehouse */}
-                <div className="mb-6 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                      Product Inventory
-                    </h2>
-                    <select
-                      value={filters.warehouseId || ""}
-                      onChange={(e) =>
-                        handleFilterChange(
-                          "warehouseId",
-                          e.target.value ? Number(e.target.value) : undefined
-                        )
-                      }
-                      className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">All Warehouses</option>
-                      {warehouses.map((w) => (
-                        <option key={w.warehouseId} value={w.warehouseId}>
-                          {w.warehouseName}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  {filters.warehouseId && (
-                    <button
-                      onClick={() => handleFilterChange("warehouseId", undefined)}
-                      className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
-                    >
-                      Clear Filter
-                    </button>
-                  )}
-                </div>
+{/* PRODUCTS TAB */}
+{activeTab === "products" && (
+  <div>
+    {/* Filter by Warehouse */}
+    <div className="mb-6 flex items-center justify-between">
+      <div className="flex items-center gap-4">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+          Product Inventory
+        </h2>
+        <select
+          value={filters.warehouseId || ""}
+          onChange={(e) =>
+            handleFilterChange(
+              "warehouseId",
+              e.target.value ? Number(e.target.value) : undefined
+            )
+          }
+          className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">All Warehouses</option>
+          {warehouses.map((w) => (
+            <option key={w.warehouseId} value={w.warehouseId}>
+              {w.warehouseName}
+            </option>
+          ))}
+        </select>
+      </div>
+      {filters.warehouseId && (
+        <button
+          onClick={() => handleFilterChange("warehouseId", undefined)}
+          className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+        >
+          Clear Filter
+        </button>
+      )}
+    </div>
 
-                {/* Summary Cards */}
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
-                    <div className="text-sm text-green-700 dark:text-green-400 font-medium">
-                      Total Import
-                    </div>
-                    <div className="text-2xl font-bold text-green-900 dark:text-green-300 mt-1">
-                      {productTotals.totalImport.toLocaleString()}
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
-                    <div className="text-sm text-blue-700 dark:text-blue-400 font-medium">
-                      Total Export
-                    </div>
-                    <div className="text-2xl font-bold text-blue-900 dark:text-blue-300 mt-1">
-                      {productTotals.totalExport.toLocaleString()}
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 rounded-lg p-4 border border-red-200 dark:border-red-800">
-                    <div className="text-sm text-red-700 dark:text-red-400 font-medium">
-                      Damaged
-                    </div>
-                    <div className="text-2xl font-bold text-red-900 dark:text-red-300 mt-1">
-                      {productTotals.totalDamaged.toLocaleString()}
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                    <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
-                      Current Stock
-                    </div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">
-                      {productTotals.totalStock.toLocaleString()}
-                    </div>
-                  </div>
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg p-4 border border-purple-200 dark:border-purple-800">
-                    <div className="text-sm text-purple-700 dark:text-purple-400 font-medium">
-                      Total Value
-                    </div>
-                    <div className="text-2xl font-bold text-purple-900 dark:text-purple-300 mt-1">
-                      ${productTotals.totalValue.toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Products Table */}
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b-2 border-gray-200 dark:border-gray-700">
-                        <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
-                          Product
-                        </th>
-                        <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
-                          Warehouse
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
-                          Import
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
-                          Export
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
-                          Damaged
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
-                          Stock
-                        </th>
-                        <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
-                          Value
-                        </th>
-                        <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
-                          Status
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {isLoadingProducts ? (
-                        <tr>
-                          <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
-                            Loading...
-                          </td>
-                        </tr>
-                      ) : products.length === 0 ? (
-                        <tr>
-                          <td colSpan={8} className="px-4 py-8 text-center text-gray-500">
-                            No products found
-                          </td>
-                        </tr>
-                      ) : (
-                        products.map((product, index) => {
-                          const status = getStockStatus(product.currentStock);
-                          return (
-                            <tr
-                              key={`${product.productId}-${product.warehouseId}-${index}`}
-                              className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
-                            >
-                              <td className="px-4 py-4 font-medium text-gray-900 dark:text-gray-100">
-                                {product.productName}
-                              </td>
-                              <td className="px-4 py-4 text-gray-600 dark:text-gray-400">
-                                {product.warehouseName}
-                              </td>
-                              <td className="px-4 py-4 text-right text-green-600 dark:text-green-400">
-                                {product.quantityImport.toLocaleString()}
-                              </td>
-                              <td className="px-4 py-4 text-right text-blue-600 dark:text-blue-400">
-                                {product.quantityExport.toLocaleString()}
-                              </td>
-                              <td className="px-4 py-4 text-right text-red-600 dark:text-red-400">
-                                {product.damagedQuantity.toLocaleString()}
-                              </td>
-                              <td className="px-4 py-4 text-right font-bold text-gray-900 dark:text-gray-100">
-                                {product.currentStock.toLocaleString()}
-                              </td>
-                              <td className="px-4 py-4 text-right font-medium text-purple-600 dark:text-purple-400">
-                                ${product.totalValue.toLocaleString()}
-                              </td>
-                              <td className="px-4 py-4 text-center">
-                                <span
-                                  className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${status.className}`}
-                                >
-                                  {status.label}
-                                </span>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
+   <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+  <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
+    <div className="text-sm text-green-700 dark:text-green-400 font-medium">
+      Total Import
+    </div>
+    <div className="text-2xl font-bold text-green-900 dark:text-green-300 mt-1">
+      {productTotals.totalImport.toLocaleString()}
+    </div>
+  </div>
+  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+    <div className="text-sm text-blue-700 dark:text-blue-400 font-medium">
+      Total Export
+    </div>
+    <div className="text-2xl font-bold text-blue-900 dark:text-blue-300 mt-1">
+      {productTotals.totalExport.toLocaleString()}
+    </div>
+  </div>
+  <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+    <div className="text-sm text-gray-700 dark:text-gray-300 font-medium">
+      Current Stock
+    </div>
+    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+      {productTotals.totalStock.toLocaleString()}
+    </div>
+  </div>
+</div>
+   <div className="overflow-x-auto">
+  <table className="w-full text-sm">
+    <thead>
+      <tr className="border-b-2 border-gray-200 dark:border-gray-700">
+        <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
+          Product ID
+        </th>
+        <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
+          Product
+        </th>
+        <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">
+          Warehouse
+        </th>
+        <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
+          Import
+        </th>
+        <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
+          Export
+        </th>
+        <th className="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">
+          Stock
+        </th>
+        <th className="px-4 py-3 text-center font-semibold text-gray-700 dark:text-gray-300">
+          Status
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {isLoadingProducts ? (
+        <tr>
+          <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+            Loading...
+          </td>
+        </tr>
+      ) : products.length === 0 ? (
+        <tr>
+          <td colSpan={7} className="px-4 py-8 text-center text-gray-500">
+            No products found
+          </td>
+        </tr>
+      ) : (
+        products.map((product, index) => {
+          const status = getStockStatus(product.currentStock);
+          return (
+            <tr
+              key={`${product.productId}-${product.warehouseId}-${index}`}
+              className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+            >
+              <td className="px-4 py-4 text-sm text-gray-600 dark:text-gray-400">
+                #{product.productId}
+              </td>
+              <td className="px-4 py-4 font-medium text-gray-900 dark:text-gray-100">
+                {product.productName}
+              </td>
+              <td className="px-4 py-4 text-gray-600 dark:text-gray-400">
+                {product.warehouseName}
+              </td>
+              <td className="px-4 py-4 text-right text-green-600 dark:text-green-400">
+                {product.quantityImport.toLocaleString()}
+              </td>
+              <td className="px-4 py-4 text-right text-blue-600 dark:text-blue-400">
+                {product.quantityExport.toLocaleString()}
+              </td>
+              <td className="px-4 py-4 text-right font-bold text-gray-900 dark:text-gray-100">
+                {product.currentStock.toLocaleString()}
+              </td>
+              <td className="px-4 py-4 text-center">
+                <span
+                  className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${status.className}`}
+                >
+                  {status.label}
+                </span>
+              </td>
+            </tr>
+          );
+        })
+      )}
+    </tbody>
+  </table>
+</div>
+  </div>
+)}
           </div>
         </div>
       </div>
