@@ -26,15 +26,22 @@ import Warehouses from "./pages/Warehouses/Warehouses";
 import Customers from "./pages/Customers/Customers";
 import Suppliers from "./pages/Suppliers/Suppliers";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import OrderDetail from "./pages/Orders/OrderDetails";
+import WarehouseStatisticsReport from "./pages/Reports/WarehouseStatisticsReport";
+import StockHistoryReport from "./pages/Reports/StockHistoryReport";
+import CustomerOrdersReport from "./pages/Reports/CustomerOrdersReport";
+import CustomerOrderDetailPage from "./pages/Reports/CustomerOrderDetailPage";
 import Roles from "./pages/Roles/Roles";
 import Accounts from "./pages/Accounts/Accounts";
 import Orders from "./pages/SalesOrder/Orders";
 import CreateOrder from "./pages/SalesOrder/CreateOrder";
-import OrderDetail from "./pages/SalesOrder/OrderDetails";
 import PurchaseOrders from "./pages/PurchaseOrder/PurchaseOrders";
 import CreatePurchaseOrder from "./pages/PurchaseOrder/CreatePurchaseOrder";
 import PurchaseOrderDetails from "./pages/PurchaseOrder/PurchaseOrderDetails";
 import RoleDetail from "./components/role/RoleDetail";
+import EmployeeListPage from "./pages/Employees/EmployeeListPage";
+import EmployeeFormPage from "./pages/Employees/EmployeeFormPage";
+import EmployeeDetailPage from "./pages/Employees/EmployeeDetailPage";
 
 export default function App() {
   // Test API
@@ -164,6 +171,31 @@ export default function App() {
             <Route path="/orders/create" element={<CreateOrder />} />
             <Route path="/orders/:id" element={<OrderDetail />} />
 
+            {/* Reports */}
+            <Route
+              path="/reports/warehouse-statistics"
+              element={<WarehouseStatisticsReport />}
+            />
+
+            <Route
+              path="/reports/stock-history"
+              element={<StockHistoryReport />}
+            />
+            <Route path="/reports/orders" element={<CustomerOrdersReport />} />
+            <Route
+              path="/reports/orders/:orderId"
+              element={<CustomerOrderDetailPage />}
+            />
+            <Route path="/employees" element={<EmployeeListPage />} />
+            <Route path="/employees/create" element={<EmployeeFormPage />} />
+            <Route
+              path="/employees/edit/:employeeId"
+              element={<EmployeeFormPage />}
+            />
+            <Route
+              path="/employees/:employeeId"
+              element={<EmployeeDetailPage />}
+            />
             {/* Purchase Orders */}
             <Route path="/purchase-orders" element={<PurchaseOrders />} />
             <Route
