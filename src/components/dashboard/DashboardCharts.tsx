@@ -171,7 +171,7 @@ export default function DashboardCharts() {
       )}
 
       {/* Stock Summary Cards */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
         <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03]">
           <p className="text-xs text-gray-500 dark:text-gray-400">Total Warehouses</p>
           <p className="mt-2 text-2xl font-bold text-gray-800 dark:text-white">
@@ -188,12 +188,6 @@ export default function DashboardCharts() {
           <p className="text-xs text-gray-500 dark:text-gray-400">Total Products</p>
           <p className="mt-2 text-2xl font-bold text-gray-800 dark:text-white">
             {productData.length}
-          </p>
-        </div>
-        <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03]">
-          <p className="text-xs text-gray-500 dark:text-gray-400">Inventory Value</p>
-          <p className="mt-2 text-2xl font-bold text-gray-800 dark:text-white">
-            ${(productData.reduce((sum, p) => sum + p.totalValue, 0) / 1000).toFixed(0)}K
           </p>
         </div>
       </div>

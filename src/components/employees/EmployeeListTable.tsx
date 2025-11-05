@@ -1,6 +1,5 @@
 // components/employees/EmployeeListTable.tsx
 import { Employee } from "../../types/employee";
-import { Link } from "react-router-dom";
 
 interface EmployeeListTableProps {
   data: Employee[];
@@ -9,6 +8,7 @@ interface EmployeeListTableProps {
   pageSize: number;
   isLoading: boolean;
   onPageChange: (page: number) => void;
+  onRowClick: (employeeId: number) => void;
   onEdit: (employeeId: number) => void;
   onDelete: (employeeId: number) => void;
 }
@@ -20,6 +20,7 @@ export default function EmployeeListTable({
   pageSize,
   isLoading,
   onPageChange,
+  onRowClick,
   onEdit,
   onDelete,
 }: EmployeeListTableProps) {
@@ -43,6 +44,11 @@ export default function EmployeeListTable({
       style: "currency",
       currency: "USD",
     }).format(value);
+  };
+
+  const handleActionClick = (e: React.MouseEvent, action: () => void) => {
+    e.stopPropagation();
+    action();
   };
 
   return (
@@ -97,7 +103,8 @@ export default function EmployeeListTable({
               data.map((employee) => (
                 <tr
                   key={employee.employeeId}
-                  className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                  onClick={() => onRowClick(employee.employeeId)}
+                  className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
                 >
                   <td className="px-4 py-4 font-medium text-gray-900 dark:text-gray-100">
                     #{employee.employeeId}
@@ -125,20 +132,20 @@ export default function EmployeeListTable({
                   </td>
                   <td className="px-4 py-4 text-center">
                     <div className="flex justify-center gap-2">
-                      <Link
-                        to={`/employees/${employee.employeeId}`}
+                      <button
+                        onClick={(e) => handleActionClick(e, () => onRowClick(employee.employeeId))}
                         className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
                       >
                         View
-                      </Link>
+                      </button>
                       <button
-                        onClick={() => onEdit(employee.employeeId)}
+                        onClick={(e) => handleActionClick(e, () => onEdit(employee.employeeId))}
                         className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 font-medium"
                       >
                         Edit
                       </button>
                       <button
-                        onClick={() => onDelete(employee.employeeId)}
+                        onClick={(e) => handleActionClick(e, () => onDelete(employee.employeeId))}
                         className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium"
                       >
                         Delete
