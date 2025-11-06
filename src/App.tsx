@@ -71,23 +71,16 @@ export default function App() {
             <Route
               path="/accounts"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <Accounts />
                 </ProtectedRoute>
               }
             />
-            {/* <Route
-              path="/roles"
-              element={
-                <ProtectedRoute requiredRole="Admin">
-                  <Roles />
-                </ProtectedRoute>
-              }
-            /> */}
+
             <Route
               path="/roles"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <Roles />
                 </ProtectedRoute>
               }
@@ -96,7 +89,7 @@ export default function App() {
             <Route
               path="/roles/:roleName"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <RoleDetail />
                 </ProtectedRoute>
               }
@@ -105,28 +98,28 @@ export default function App() {
             <Route path="/blank" element={<Blank />} />
             <Route path="/products" element={<Products />} />
 
-            {/* <Route
+            <Route
               path="/categories"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <Categories />
                 </ProtectedRoute>
               }
-            /> */}
+            />
 
-            <Route
+            {/* <Route
               path="/categories"
               element={
                 <ProtectedRoute requiredPermissions={["Category_View"]}>
                   <Categories />
                 </ProtectedRoute>
               }
-            />
+            /> */}
 
             <Route
               path="/warehouses"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <Warehouses />
                 </ProtectedRoute>
               }
@@ -134,7 +127,7 @@ export default function App() {
             <Route
               path="/customers"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <Customers />
                 </ProtectedRoute>
               }
@@ -142,7 +135,7 @@ export default function App() {
             <Route
               path="/suppliers"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <Suppliers />
                 </ProtectedRoute>
               }

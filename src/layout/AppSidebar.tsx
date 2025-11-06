@@ -44,17 +44,19 @@ const navItems: NavItem[] = [
   {
     name: "Roles & Accounts",
     icon: <Users />,
-    requiredRole: "Admin",
     subItems: [
+      // {
+      //   name: "Accounts",
+      //   path: "/accounts",
+      //   requiredRole: "Admin",
+      // },
       {
         name: "Accounts",
         path: "/accounts",
-        requiredRole: "Admin",
       },
       {
         name: "Roles",
         path: "/roles",
-        requiredRole: "Admin",
       },
     ],
   },
@@ -101,25 +103,21 @@ const navItems: NavItem[] = [
     icon: <BoxCubeIcon />,
     name: "Categories",
     path: "/categories",
-    requiredRole: "Admin",
   },
   {
     icon: <Warehouse />,
     name: "Warehouses",
     path: "/warehouses",
-    requiredRole: "Admin",
   },
   {
     icon: <Package2 />,
     name: "Suppliers",
     path: "/suppliers",
-    requiredRole: "Admin",
   },
   {
     icon: <UserLineIcon />,
     name: "Customers",
     path: "/customers",
-    requiredRole: "Admin",
   },
   {
     icon: <ListIcon />,
