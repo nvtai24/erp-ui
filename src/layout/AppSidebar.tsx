@@ -18,11 +18,8 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { Warehouse } from "lucide-react";
-import { ChartBarStacked } from "lucide-react";
-import { Package2 } from "lucide-react";
+import { Warehouse, Package2, BarChart3, Users, UserCog } from "lucide-react";
 import { authService } from "../services/authService";
-import { Users } from "lucide-react";
 
 type NavItem = {
   name: string;
@@ -33,9 +30,9 @@ type NavItem = {
     path: string;
     pro?: boolean;
     new?: boolean;
-    requiredRole?: string; // thêm nếu muốn subItem yêu cầu role
+    requiredRole?: string;
   }[];
-  requiredRole?: string; // thêm để menu item chính có role
+  requiredRole?: string;
 };
 
 const navItems: NavItem[] = [
@@ -62,6 +59,14 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    name: "Employees",
+    icon: <UserCog />,
+    subItems: [
+      { name: "View Employees", path: "/employees", pro: false },
+      { name: "Add Employee", path: "/employees/create", pro: false },
+    ],
+  },
+  {
     name: "Sale",
     icon: <BoxCubeIcon />,
     subItems: [
@@ -69,7 +74,6 @@ const navItems: NavItem[] = [
       { name: "Create Order", path: "/orders/create", pro: false },
     ],
   },
-
   {
     name: "Purchase",
     icon: <BoxCubeIcon />,
@@ -78,7 +82,6 @@ const navItems: NavItem[] = [
       { name: "Create Purchase", path: "/purchase-orders/create", pro: false },
     ],
   },
-
   // {
   //   icon: <CalenderIcon />,
   //   name: "Calendar",
@@ -103,7 +106,7 @@ const navItems: NavItem[] = [
   {
     icon: <Warehouse />,
     name: "Warehouses",
-    path: "/Warehouses",
+    path: "/warehouses",
     requiredRole: "Admin",
   },
   {
@@ -141,6 +144,19 @@ const navItems: NavItem[] = [
 ];
 
 const othersItems: NavItem[] = [
+  {
+    icon: <BarChart3 />,
+    name: "Reports",
+    subItems: [
+      {
+        name: "Warehouse Statistics",
+        path: "/reports/warehouse-statistics",
+        pro: false,
+      },
+      { name: "Stock History", path: "/reports/stock-history", pro: false },
+      { name: "Customer Orders", path: "/reports/orders", pro: false },
+    ],
+  },
   {
     icon: <PieChartIcon />,
     name: "Charts",
@@ -195,22 +211,21 @@ const AppSidebar: React.FC = () => {
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // const isActive = (path: string) => location.pathname === path;
-  // const isActive = useCallback(
-  //   (path: string) => location.pathname === path,
-  //   [location.pathname]
-  // );
-
   const isActive = useCallback(
-  (path: string) => {
-    if (path === "/roles" && location.pathname.startsWith("/roles/")) {
-      return true;
-    }
-    
-    return location.pathname === path;
-  },
-  [location.pathname]
-);
+    (path: string) => {
+      if (path === "/roles" && location.pathname.startsWith("/roles/")) {
+        return true;
+      }
+      
+      // Handle employee routes
+      if (path === "/employees" && location.pathname.startsWith("/employees")) {
+        return location.pathname === "/employees";
+      }
+      
+      return location.pathname === path;
+    },
+    [location.pathname]
+  );
 
   useEffect(() => {
     let submenuMatched = false;
@@ -264,15 +279,13 @@ const AppSidebar: React.FC = () => {
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
     <ul className="flex flex-col gap-4">
       {items
-        // Lọc menu item theo role
         .filter((nav) => {
-          if (!nav.requiredRole) return true; // không yêu cầu role → hiển thị
-          return userRoles.includes(nav.requiredRole); // có role → hiển thị
+          if (!nav.requiredRole) return true;
+          return userRoles.includes(nav.requiredRole);
         })
         .map((nav, index) => (
           <li key={nav.name}>
             {nav.subItems ? (
-              // Menu có subItems
               <button
                 onClick={() => handleSubmenuToggle(index, menuType)}
                 className={`menu-item group ${
@@ -310,7 +323,6 @@ const AppSidebar: React.FC = () => {
                 )}
               </button>
             ) : (
-              // Menu không có subItems
               nav.path && (
                 <Link
                   to={nav.path}
@@ -336,7 +348,6 @@ const AppSidebar: React.FC = () => {
               )
             )}
 
-            {/* Render subItems nếu có */}
             {nav.subItems && (isExpanded || isHovered || isMobileOpen) && (
               <div
                 ref={(el) => {
@@ -353,7 +364,6 @@ const AppSidebar: React.FC = () => {
               >
                 <ul className="mt-2 space-y-1 ml-9">
                   {nav.subItems
-                    // Lọc subItems theo role nếu subItem có requiredRole
                     .filter((subItem) => {
                       if (!subItem.requiredRole) return true;
                       return userRoles.includes(subItem.requiredRole);
