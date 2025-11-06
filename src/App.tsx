@@ -26,7 +26,6 @@ import Warehouses from "./pages/Warehouses/Warehouses";
 import Customers from "./pages/Customers/Customers";
 import Suppliers from "./pages/Suppliers/Suppliers";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import OrderDetail from "./pages/Orders/OrderDetails";
 import WarehouseStatisticsReport from "./pages/Reports/WarehouseStatisticsReport";
 import StockHistoryReport from "./pages/Reports/StockHistoryReport";
 import CustomerOrdersReport from "./pages/Reports/CustomerOrdersReport";
@@ -42,6 +41,7 @@ import RoleDetail from "./components/role/RoleDetail";
 import EmployeeListPage from "./pages/Employees/EmployeeListPage";
 import EmployeeFormPage from "./pages/Employees/EmployeeFormPage";
 import EmployeeDetailPage from "./pages/Employees/EmployeeDetailPage";
+import OrderDetail from "./pages/SalesOrder/OrderDetails";
 
 export default function App() {
   // Test API
