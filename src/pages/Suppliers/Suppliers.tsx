@@ -125,7 +125,7 @@ function SuppliersContent() {
       } else {
         addToast({
           type: "error",
-          message: response.message || "Failed to save Supplier",
+          message: response.data || "Failed to save Supplier",
         });
         setShowCreateModal(false);
       }
@@ -212,7 +212,7 @@ function SuppliersContent() {
           fetchSuppliers={fetchSuppliers}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          itemsPerPage={5}
+          itemsPerPage={10}
         />
       </div>
 

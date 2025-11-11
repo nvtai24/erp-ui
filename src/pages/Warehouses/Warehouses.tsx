@@ -124,7 +124,7 @@ function WarehousesContent() {
       } else {
         addToast({
           type: "error",
-          message: response.message || "Failed to save warehouse",
+          message: response.data || "Failed to save warehouse",
         });
         setShowCreateModal(false);
       }
@@ -211,7 +211,7 @@ function WarehousesContent() {
           fetchWarehouses={fetchWarehouses}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          itemsPerPage={5}
+          itemsPerPage={10}
         />
       </div>
 
