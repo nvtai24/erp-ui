@@ -124,7 +124,7 @@ function WarehousesContent() {
       } else {
         addToast({
           type: "error",
-          message: response.message || "Failed to save warehouse",
+          message: response.data || "Failed to save warehouse",
         });
         setShowCreateModal(false);
       }
