@@ -1,27 +1,19 @@
-export interface Contract {
+export type Contract = {
   contractId: number;
+  contractType: string;
+  startDate: string;
+  endDate: string;
+  baseSalary: number;
+  position: string;
+  status: string;
   employeeId: number;
   employeeName?: string;
-  contractType: string;
-  position: string;
-  baseSalary: number;
-  startDate: string;
-  endDate?: string;
-  status: string;
-}
+};
 
-export interface ContractSave {
-  contractId?: number;
-  employeeId: number;
-  contractType: string;
-  position: string;
-  baseSalary: number;
-  startDate: string;
-  endDate?: string;
-}
-
-export interface ContractSearch {
-  keyword?: string;
-  pageNumber?: number;
-  pageSize?: number;
-}
+export type ApiResponse<T> = {
+  data: T | null;
+  metaData: any | null;
+  message: string;
+  success: boolean;
+  statusCode: number;
+};

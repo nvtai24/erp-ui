@@ -1,138 +1,176 @@
-// import React, { useEffect, useState } from "react";
-// import { ContractSave } from "../../types/contract";
-// import { createContract, updateContract } from "../../services/contractService";
-// import { getEmployees } from "../../services/employeeService"; // optional service for dropdown
+import { useState, useEffect } from "react";
+import { Contract } from "../../types/contract";
 
-// interface ContractFormProps {
-//   onSuccess: () => void;
-//   onCancel: () => void;
-//   initialData?: ContractSave;
-// }
+type Props = {
+  contract?: Contract;
+  onSubmit: (data: Omit<Contract, "contractId" | "employeeName">) => Promise<void>;
+  onClose: () => void;
+  isSubmitting?: boolean;
+};
 
-// const ContractForm: React.FC<ContractFormProps> = ({ onSuccess, onCancel, initialData }) => {
-//   const [formData, setFormData] = useState<ContractSave>(
-//     initialData || {
-//       employeeId: 0,
-//       contractType: "",
-//       position: "",
-//       baseSalary: 0,
-//       startDate: "",
-//       endDate: "",
-//     }
-//   );
+export default function ContractForm({ contract, onSubmit, onClose, isSubmitting }: Props) {
+  const [formData, setFormData] = useState<Partial<Contract>>({
+    contractType: "",
+    startDate: "",
+    endDate: "",
+    baseSalary: 0,
+    position: "",
+    status: "Active",
+    employeeId: 0,
+  });
 
-//   const [employees, setEmployees] = useState<{ employeeId: number; name: string }[]>([]);
+  useEffect(() => {
+    if (contract) {
+      setFormData({
+        contractId: contract.contractId,
+        contractType: contract.contractType,
+        startDate: contract.startDate?.substring(0, 10),
+        endDate: contract.endDate?.substring(0, 10),
+        baseSalary: contract.baseSalary,
+        position: contract.position,
+        status: contract.status,
+        employeeId: contract.employeeId,
+      });
+    }
+  }, [contract]);
 
-//   useEffect(() => {
-//     loadEmployees();
-//   }, []);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "baseSalary" || name === "employeeId" ? Number(value) : value,
+    }));
+  };
 
-//   const loadEmployees = async () => {
-//     const res = await getEmployees();
-//     setEmployees(res.data || []);
-//   };
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  await onSubmit(formData as Omit<Contract, "contractId" | "employeeName">);
+};
 
-//   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-//     const { name, value } = e.target;
-//     setFormData({ ...formData, [name]: value });
-//   };
 
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     if (formData.contractId) await updateContract(formData);
-//     else await createContract(formData);
-//     onSuccess();
-//   };
+  return (
+    <div className="fixed inset-0 bg-gray-700 bg-opacity-40 flex justify-center items-center z-50">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
+        <h2 className="text-xl font-semibold mb-4">
+          {contract ? "Edit Contract" : "Create New Contract"}
+        </h2>
 
-//   return (
-//     <form onSubmit={handleSubmit} className="p-3">
-//       <div className="mb-3">
-//         <label className="form-label">Employee</label>
-//         <select
-//           name="employeeId"
-//           className="form-select"
-//           value={formData.employeeId}
-//           onChange={handleChange}
-//           required
-//         >
-//           <option value="">Select employee</option>
-//           {employees.map((emp) => (
-//             <option key={emp.employeeId} value={emp.employeeId}>
-//               {emp.name}
-//             </option>
-//           ))}
-//         </select>
-//       </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Contract Type */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Contract Type</label>
+            <input
+              type="text"
+              name="contractType"
+              value={formData.contractType || ""}
+              onChange={handleChange}
+              required
+              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+            />
+          </div>
 
-//       <div className="mb-3">
-//         <label className="form-label">Contract Type</label>
-//         <input
-//           type="text"
-//           className="form-control"
-//           name="contractType"
-//           value={formData.contractType}
-//           onChange={handleChange}
-//           required
-//         />
-//       </div>
+          {/* Start - End Date */}
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-1">Start Date</label>
+              <input
+                type="date"
+                name="startDate"
+                value={formData.startDate || ""}
+                onChange={handleChange}
+                required
+                className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium mb-1">End Date</label>
+              <input
+                type="date"
+                name="endDate"
+                value={formData.endDate || ""}
+                onChange={handleChange}
+                required
+                className="border border-gray-300 rounded-md px-3 py-2 w-full"
+              />
+            </div>
+          </div>
 
-//       <div className="mb-3">
-//         <label className="form-label">Position</label>
-//         <input
-//           type="text"
-//           className="form-control"
-//           name="position"
-//           value={formData.position}
-//           onChange={handleChange}
-//           required
-//         />
-//       </div>
+          {/* Base Salary */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Base Salary (VND)</label>
+            <input
+              type="number"
+              name="baseSalary"
+              value={formData.baseSalary || ""}
+              onChange={handleChange}
+              min={0}
+              required
+              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+            />
+          </div>
 
-//       <div className="mb-3">
-//         <label className="form-label">Base Salary</label>
-//         <input
-//           type="number"
-//           className="form-control"
-//           name="baseSalary"
-//           value={formData.baseSalary}
-//           onChange={handleChange}
-//           required
-//         />
-//       </div>
+          {/* Position */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Position</label>
+            <input
+              type="text"
+              name="position"
+              value={formData.position || ""}
+              onChange={handleChange}
+              required
+              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+            />
+          </div>
 
-//       <div className="mb-3">
-//         <label className="form-label">Start Date</label>
-//         <input
-//           type="date"
-//           className="form-control"
-//           name="startDate"
-//           value={formData.startDate}
-//           onChange={handleChange}
-//           required
-//         />
-//       </div>
+          {/* Status */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Status</label>
+            <select
+              name="status"
+              value={formData.status || ""}
+              onChange={handleChange}
+              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+            >
+              <option value="Active">Active</option>
+              <option value="Expired">Expired</option>
+              <option value="Pending">Pending</option>
+            </select>
+          </div>
 
-//       <div className="mb-3">
-//         <label className="form-label">End Date</label>
-//         <input
-//           type="date"
-//           className="form-control"
-//           name="endDate"
-//           value={formData.endDate}
-//           onChange={handleChange}
-//         />
-//       </div>
+          {/* Employee ID */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Employee ID</label>
+            <input
+              type="number"
+              name="employeeId"
+              value={formData.employeeId || ""}
+              onChange={handleChange}
+              required
+              className="border border-gray-300 rounded-md px-3 py-2 w-full"
+            />
+          </div>
 
-//       <div className="d-flex justify-content-end">
-//         <button type="button" className="btn btn-secondary me-2" onClick={onCancel}>
-//           Cancel
-//         </button>
-//         <button type="submit" className="btn btn-primary">
-//           {formData.contractId ? "Update" : "Create"}
-//         </button>
-//       </div>
-//     </form>
-//   );
-// };
-
-// export default ContractForm;
+          {/* Actions */}
+          <div className="flex justify-end gap-3 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-gray-300 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-400"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`px-4 py-2 rounded-md text-white ${
+                isSubmitting ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+              }`}
+            >
+              {isSubmitting ? "Saving..." : contract ? "Update" : "Save"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
