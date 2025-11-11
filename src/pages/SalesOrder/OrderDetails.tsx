@@ -19,7 +19,7 @@ export default function OrderDetail() {
       try {
         setLoading(true);
         const response = await axiosClient.get<ViewOrderDto>(
-          `/SalesOrders/${id}`
+          `/salesorders/${id}`
         );
         console.log(response.data);
         setOrder(response.data);
@@ -101,12 +101,6 @@ export default function OrderDetail() {
               <span className="font-medium">Contact: </span>
               {order.contact}
             </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              <span className="font-medium">Handled by: </span>
-              {order.staffName
-                ? `${order.staffName} (ID: ${order.staffId})`
-                : "N/A"}
-            </p>
           </div>
           <div>
             <p className="text-gray-600 dark:text-gray-400">
@@ -137,9 +131,6 @@ export default function OrderDetail() {
             <thead>
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Product ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Product
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -156,9 +147,6 @@ export default function OrderDetail() {
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {order.orderDetails.map((item, index) => (
                 <tr key={index}>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-400">
-                    #{item.productId}
-                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-400">
                     {item.productName}
                   </td>
@@ -177,7 +165,7 @@ export default function OrderDetail() {
             <tfoot>
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={3}
                   className="px-6 py-4 text-right font-medium text-gray-700 dark:text-gray-300"
                 >
                   Total:

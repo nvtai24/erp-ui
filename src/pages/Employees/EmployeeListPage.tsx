@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import PageMeta from "../../components/common/PageMeta";
 import Toast from "../../components/common/Toast";
 import ConfirmDialog from "../../components/common/ConfirmDialog";
+import EmployeeFormModal from "../../components/employees/EmployeeFormModal";
+import EmployeeDetailModal from "../../components/employees/EmployeeDetailModal";
 import { useToast } from "../../hooks/useToast";
 import EmployeeListTable from "../../components/employees/EmployeeListTable";
 import employeeService from "../../services/employeeService";
@@ -17,6 +19,17 @@ export default function EmployeeListPage() {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Modals
+  const [formModal, setFormModal] = useState<{
+    isOpen: boolean;
+    employeeId: number | null;
+  }>({ isOpen: false, employeeId: null });
+
+  const [detailModal, setDetailModal] = useState<{
+    isOpen: boolean;
+    employeeId: number | null;
+  }>({ isOpen: false, employeeId: null });
 
   // Confirm Dialog
   const [confirmDialog, setConfirmDialog] = useState<{
@@ -91,11 +104,25 @@ export default function EmployeeListPage() {
     setCurrentPage(1);
   };
 
-  const handleEdit = (employeeId: number) => {
-    navigate(`/employees/edit/${employeeId}`);
+  // Open create modal
+  const handleCreate = () => {
+    setFormModal({ isOpen: true, employeeId: null });
   };
 
+  // Open edit modal
+  const handleEdit = (employeeId: number) => {
+    setDetailModal({ isOpen: false, employeeId: null }); // Close detail modal if open
+    setFormModal({ isOpen: true, employeeId });
+  };
+
+  // Open detail modal when clicking on row
+  const handleRowClick = (employeeId: number) => {
+    setDetailModal({ isOpen: true, employeeId });
+  };
+
+  // Open delete confirmation
   const handleDelete = (employeeId: number) => {
+    setDetailModal({ isOpen: false, employeeId: null }); // Close detail modal if open
     setConfirmDialog({ isOpen: true, employeeId });
   };
 
@@ -122,6 +149,18 @@ export default function EmployeeListPage() {
     setConfirmDialog({ isOpen: false, employeeId: null });
   };
 
+  const handleFormSuccess = () => {
+    showToast(
+      `Employee ${formModal.employeeId ? "updated" : "created"} successfully!`,
+      "success"
+    );
+    fetchEmployees();
+  };
+
+  const handleFormError = (message: string) => {
+    showToast(message, "error");
+  };
+
   return (
     <>
       <PageMeta
@@ -144,13 +183,29 @@ export default function EmployeeListPage() {
         onCancel={cancelDelete}
       />
 
+      <EmployeeFormModal
+        isOpen={formModal.isOpen}
+        employeeId={formModal.employeeId}
+        onClose={() => setFormModal({ isOpen: false, employeeId: null })}
+        onSuccess={handleFormSuccess}
+        onError={handleFormError}
+      />
+
+      <EmployeeDetailModal
+        isOpen={detailModal.isOpen}
+        employeeId={detailModal.employeeId}
+        onClose={() => setDetailModal({ isOpen: false, employeeId: null })}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+
       <div className="mx-auto max-w-7xl mt-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Employee Management
           </h1>
           <button
-            onClick={() => navigate("/employees/create")}
+            onClick={handleCreate}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium"
           >
             + Add Employee
@@ -241,6 +296,7 @@ export default function EmployeeListPage() {
             pageSize={pageSize}
             isLoading={isLoading}
             onPageChange={setCurrentPage}
+            onRowClick={handleRowClick}
             onEdit={handleEdit}
             onDelete={handleDelete}
           />
