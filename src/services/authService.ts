@@ -138,4 +138,17 @@ export const authService = {
     const user = authService.getCurrentUser();
     return user?.permissions ?? [];
   },
+
+  refreshUser: async (): Promise<void> => {
+  try {
+    const res = await axiosClient.get<UserInfo>("/Accounts/GetCurrentUser", {
+      withCredentials: true,
+    });
+    if (res.data) {
+      localStorage.setItem("user", JSON.stringify(res.data));
+    }
+  } catch (error) {
+    console.error("Failed to refresh user:", error);
+  }
+},
 };

@@ -4,6 +4,7 @@ import AccountList from "../../components/account/AccountList";
 import AccountForm from "../../components/account/AccountForm";
 import ChangePasswordModal from "../../components/account/ChangePasswordModal";
 import accountService from "../../services/accountService";
+import { authService } from "../../services/authService";
 import {
   Account,
   RegisterRequest,
@@ -160,15 +161,30 @@ function AccountsContent() {
   const handleAssignRole = async (data: AssignRoleRequest) => {
     setIsSubmitting(true);
     try {
+      console.log(
+        "🔹 [Before refresh] Current user:",
+        authService.getCurrentUser()
+      );
+
       const res = await accountService.assignRole(data);
       if (res.success) {
         addToast({ type: "success", message: "Roles assigned successfully!" });
+
+        // 🔄 Gọi API để cập nhật lại user info
+        console.log("🔹 Calling authService.refreshUser()...");
+        await authService.refreshUser();
+
+        // ⏳ Đợi 1 chút để localStorage cập nhật rồi log
+        const updatedUser = authService.getCurrentUser();
+        console.log("✅ [After refresh] Updated user:", updatedUser);
+
         setShowAssignRole(false);
         setRefreshKey((prev) => prev + 1);
       } else {
         addToast({ type: "error", message: res.message });
       }
-    } catch {
+    } catch (error) {
+      console.error("❌ Failed to assign roles:", error);
       addToast({ type: "error", message: "Failed to assign roles" });
     } finally {
       setIsSubmitting(false);
@@ -242,7 +258,7 @@ function AccountsContent() {
             setSelectedAccount(acc);
             setShowAssignRole(true);
           }}
-          itemsPerPage={5}
+          itemsPerPage={10}
         />
       </div>
 

@@ -211,7 +211,7 @@ function WarehousesContent() {
           fetchWarehouses={fetchWarehouses}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          itemsPerPage={5}
+          itemsPerPage={10}
         />
       </div>
 

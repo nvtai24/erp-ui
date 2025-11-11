@@ -212,7 +212,7 @@ function CustomersContent() {
           fetchCustomers={fetchCustomers}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          itemsPerPage={5}
+          itemsPerPage={10}
         />
       </div>
 
