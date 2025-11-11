@@ -108,8 +108,9 @@ export interface ReportApiResponse<T> {
 export interface DashboardSummary {
   totalWarehouses: number;
   totalProducts: number;
-  totalInventoryValue: number;
   totalCustomers: number;
-  totalOrders: number;
-  pendingOrders: number;
+  totalSalesOrders: number;
+  totalSalesOrderValue: number;
+  totalPurchaseOrders: number;
+  totalPurchaseOrderValue: number;
 }
