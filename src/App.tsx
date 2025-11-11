@@ -110,7 +110,7 @@ export default function App() {
             <Route
               path="/categories"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredRole="Admin">
                   <Categories />
                 </ProtectedRoute>
               }

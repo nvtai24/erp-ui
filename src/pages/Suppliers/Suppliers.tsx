@@ -125,7 +125,7 @@ function SuppliersContent() {
       } else {
         addToast({
           type: "error",
-          message: response.message || "Failed to save Supplier",
+          message: response.data || "Failed to save Supplier",
         });
         setShowCreateModal(false);
       }
