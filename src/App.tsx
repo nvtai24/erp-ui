@@ -98,6 +98,15 @@ export default function App() {
             <Route path="/blank" element={<Blank />} />
             <Route path="/products" element={<Products />} />
 
+            {/* <Route
+              path="/categories"
+              element={
+                <ProtectedRoute>
+                  <Categories />
+                </ProtectedRoute>
+              }
+            /> */}
+
             <Route
               path="/categories"
               element={
@@ -106,15 +115,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-
-            {/* <Route
-              path="/categories"
-              element={
-                <ProtectedRoute requiredPermissions={["Category_View"]}>
-                  <Categories />
-                </ProtectedRoute>
-              }
-            /> */}
 
             <Route
               path="/warehouses"
