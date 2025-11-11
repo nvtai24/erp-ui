@@ -67,20 +67,22 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    name: "Sale",
+    name: "New Order",
     icon: <BoxCubeIcon />,
-    subItems: [
-      { name: "View Orders", path: "/orders", pro: false },
-      { name: "Create Order", path: "/orders/create", pro: false },
-    ],
+    path: "/orders/create",
+    // subItems: [
+    //   { name: "View Orders", path: "/orders", pro: false },
+    //   { name: "Create Order", path: "/orders/create", pro: false },
+    // ],
   },
   {
-    name: "Purchase",
+    name: "Import Purchase",
     icon: <BoxCubeIcon />,
-    subItems: [
-      { name: "View Purchases", path: "/purchase-orders", pro: false },
-      { name: "Create Purchase", path: "/purchase-orders/create", pro: false },
-    ],
+    path: "/purchase-orders/create",
+    // subItems: [
+    //   { name: "View Purchases", path: "/purchase-orders", pro: false },
+    //   { name: "Create Purchase", path: "/purchase-orders/create", pro: false },
+    // ],
   },
   // {
   //   icon: <CalenderIcon />,
@@ -216,12 +218,12 @@ const AppSidebar: React.FC = () => {
       if (path === "/roles" && location.pathname.startsWith("/roles/")) {
         return true;
       }
-      
+
       // Handle employee routes
       if (path === "/employees" && location.pathname.startsWith("/employees")) {
         return location.pathname === "/employees";
       }
-      
+
       return location.pathname === path;
     },
     [location.pathname]

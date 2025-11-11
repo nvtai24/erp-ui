@@ -167,9 +167,9 @@ export default function App() {
             <Route path="/bar-chart" element={<BarChart />} />
 
             {/* Sale Orders */}
-            <Route path="/orders" element={<Orders />} />
+            {/* <Route path="/orders" element={<Orders />} /> */}
             <Route path="/orders/create" element={<CreateOrder />} />
-            <Route path="/orders/:id" element={<OrderDetail />} />
+            {/* <Route path="/orders/:id" element={<OrderDetail />} /> */}
 
             {/* Reports */}
             <Route
@@ -197,15 +197,15 @@ export default function App() {
               element={<EmployeeDetailPage />}
             />
             {/* Purchase Orders */}
-            <Route path="/purchase-orders" element={<PurchaseOrders />} />
+            {/* <Route path="/purchase-orders" element={<PurchaseOrders />} /> */}
             <Route
               path="/purchase-orders/create"
               element={<CreatePurchaseOrder />}
             />
-            <Route
+            {/* <Route
               path="/purchase-orders/:id"
               element={<PurchaseOrderDetails />}
-            />
+            /> */}
           </Route>
 
           {/* Auth Layout */}
