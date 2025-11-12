@@ -43,6 +43,7 @@ import EmployeeFormPage from "./pages/Employees/EmployeeFormPage";
 import EmployeeDetailPage from "./pages/Employees/EmployeeDetailPage";
 import OrderDetail from "./pages/SalesOrder/OrderDetails";
 import Contracts from "./pages/Contracts/Contracts";
+import Attendances from "./pages/Attendances/Attendances";
 
 export default function App() {
   // Test API
@@ -130,6 +131,14 @@ export default function App() {
               element={
                 <ProtectedRoute requiredRole="Admin">
                   <Contracts />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/attendances"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <Attendances />
                 </ProtectedRoute>
               }
             />
