@@ -18,7 +18,7 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { Warehouse, Package2, BarChart3, Users, UserCog } from "lucide-react";
+import { Warehouse, Package2, BarChart3, Users, UserCog, FileUser } from "lucide-react";
 import { authService } from "../services/authService";
 
 type NavItem = {
@@ -110,6 +110,12 @@ const navItems: NavItem[] = [
     icon: <Warehouse />,
     name: "Warehouses",
     path: "/warehouses",
+  },
+  {
+    icon: <FileUser />,
+    name: "Contracts",
+    path: "/contracts",
+    requiredRole: "Admin",
   },
   {
     icon: <Package2 />,
