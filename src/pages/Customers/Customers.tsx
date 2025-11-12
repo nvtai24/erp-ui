@@ -125,7 +125,7 @@ function CustomersContent() {
       } else {
         addToast({
           type: "error",
-          message: response.message || "Failed to save Customer",
+          message: response.data || "Failed to save Customer",
         });
         setShowCreateModal(false);
       }
@@ -212,7 +212,7 @@ function CustomersContent() {
           fetchCustomers={fetchCustomers}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          itemsPerPage={5}
+          itemsPerPage={10}
         />
       </div>
 

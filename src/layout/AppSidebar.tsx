@@ -44,17 +44,19 @@ const navItems: NavItem[] = [
   {
     name: "Roles & Accounts",
     icon: <Users />,
-    requiredRole: "Admin",
     subItems: [
+      // {
+      //   name: "Accounts",
+      //   path: "/accounts",
+      //   requiredRole: "Admin",
+      // },
       {
         name: "Accounts",
         path: "/accounts",
-        requiredRole: "Admin",
       },
       {
         name: "Roles",
         path: "/roles",
-        requiredRole: "Admin",
       },
     ],
   },
@@ -67,20 +69,22 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    name: "Sale",
+    name: "New Order",
     icon: <BoxCubeIcon />,
-    subItems: [
-      { name: "View Orders", path: "/orders", pro: false },
-      { name: "Create Order", path: "/orders/create", pro: false },
-    ],
+    path: "/orders/create",
+    // subItems: [
+    //   { name: "View Orders", path: "/orders", pro: false },
+    //   { name: "Create Order", path: "/orders/create", pro: false },
+    // ],
   },
   {
-    name: "Purchase",
+    name: "Import Purchase",
     icon: <BoxCubeIcon />,
-    subItems: [
-      { name: "View Purchases", path: "/purchase-orders", pro: false },
-      { name: "Create Purchase", path: "/purchase-orders/create", pro: false },
-    ],
+    path: "/purchase-orders/create",
+    // subItems: [
+    //   { name: "View Purchases", path: "/purchase-orders", pro: false },
+    //   { name: "Create Purchase", path: "/purchase-orders/create", pro: false },
+    // ],
   },
   // {
   //   icon: <CalenderIcon />,
@@ -101,13 +105,11 @@ const navItems: NavItem[] = [
     icon: <BoxCubeIcon />,
     name: "Categories",
     path: "/categories",
-    requiredRole: "Admin",
   },
   {
     icon: <Warehouse />,
     name: "Warehouses",
     path: "/warehouses",
-    requiredRole: "Admin",
   },
   {
     icon: <FileUser />,
@@ -119,13 +121,11 @@ const navItems: NavItem[] = [
     icon: <Package2 />,
     name: "Suppliers",
     path: "/suppliers",
-    requiredRole: "Admin",
   },
   {
     icon: <UserLineIcon />,
     name: "Customers",
     path: "/customers",
-    requiredRole: "Admin",
   },
   {
     icon: <ListIcon />,
@@ -222,12 +222,12 @@ const AppSidebar: React.FC = () => {
       if (path === "/roles" && location.pathname.startsWith("/roles/")) {
         return true;
       }
-      
+
       // Handle employee routes
       if (path === "/employees" && location.pathname.startsWith("/employees")) {
         return location.pathname === "/employees";
       }
-      
+
       return location.pathname === path;
     },
     [location.pathname]

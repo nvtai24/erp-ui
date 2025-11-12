@@ -7,7 +7,7 @@ interface Toast {
   id: number;
   type: ToastType;
   title?: string;
-  message: string;
+  message: any;
   showLink?: boolean;
   linkHref?: string;
   linkText?: string;

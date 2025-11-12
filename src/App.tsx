@@ -71,23 +71,16 @@ export default function App() {
             <Route
               path="/accounts"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <Accounts />
                 </ProtectedRoute>
               }
             />
-            {/* <Route
-              path="/roles"
-              element={
-                <ProtectedRoute requiredRole="Admin">
-                  <Roles />
-                </ProtectedRoute>
-              }
-            /> */}
+
             <Route
               path="/roles"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <Roles />
                 </ProtectedRoute>
               }
@@ -96,7 +89,7 @@ export default function App() {
             <Route
               path="/roles/:roleName"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <RoleDetail />
                 </ProtectedRoute>
               }
@@ -108,7 +101,7 @@ export default function App() {
             {/* <Route
               path="/categories"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <Categories />
                 </ProtectedRoute>
               }
@@ -117,7 +110,7 @@ export default function App() {
             <Route
               path="/categories"
               element={
-                <ProtectedRoute requiredPermissions={["Category_View"]}>
+                <ProtectedRoute requiredRole="Admin">
                   <Categories />
                 </ProtectedRoute>
               }
@@ -126,7 +119,7 @@ export default function App() {
             <Route
               path="/warehouses"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <Warehouses />
                 </ProtectedRoute>
               }
@@ -134,7 +127,7 @@ export default function App() {
             <Route
               path="/customers"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <Customers />
                 </ProtectedRoute>
               }
@@ -142,7 +135,7 @@ export default function App() {
             <Route
               path="/suppliers"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute>
                   <Suppliers />
                 </ProtectedRoute>
               }
@@ -167,9 +160,9 @@ export default function App() {
             <Route path="/bar-chart" element={<BarChart />} />
 
             {/* Sale Orders */}
-            <Route path="/orders" element={<Orders />} />
+            {/* <Route path="/orders" element={<Orders />} /> */}
             <Route path="/orders/create" element={<CreateOrder />} />
-            <Route path="/orders/:id" element={<OrderDetail />} />
+            {/* <Route path="/orders/:id" element={<OrderDetail />} /> */}
 
             {/* Reports */}
             <Route
@@ -197,15 +190,15 @@ export default function App() {
               element={<EmployeeDetailPage />}
             />
             {/* Purchase Orders */}
-            <Route path="/purchase-orders" element={<PurchaseOrders />} />
+            {/* <Route path="/purchase-orders" element={<PurchaseOrders />} /> */}
             <Route
               path="/purchase-orders/create"
               element={<CreatePurchaseOrder />}
             />
-            <Route
+            {/* <Route
               path="/purchase-orders/:id"
               element={<PurchaseOrderDetails />}
-            />
+            /> */}
           </Route>
 
           {/* Auth Layout */}

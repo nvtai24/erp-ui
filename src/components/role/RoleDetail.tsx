@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Permission } from "../../types/role";
 import roleService from "../../services/roleService";
 import { useToast, ToastProvider } from "../ui/toast/ToastProvider";
+import { authService } from "../../services/authService";
 
 function RoleDetailContent() {
   const { roleName } = useParams<{ roleName: string }>();
@@ -49,31 +50,42 @@ function RoleDetailContent() {
   };
 
   const savePermissions = async () => {
-    setSaving(true);
-    try {
-      const res = await roleService.assignPermissions({
-        roleName: roleName!,
-        permissions: assignedPermissions,
+  setSaving(true);
+  try {
+    const res = await roleService.assignPermissions({
+      roleName: roleName!,
+      permissions: assignedPermissions,
+    });
+
+    if (res.success) {
+      addToast({
+        type: "success",
+        message: "Permission assigned successfully!",
       });
 
-      if (res.success) {
-        addToast({
-          type: "success",
-          message: "Permission assigned successfully!",
-        });
-      } else {
-        addToast({
-          type: "error",
-          message: res.message || "Failed to assign permission",
-        });
-      }
-    } catch (err) {
-      console.error(err);
-      addToast({ type: "error", message: "Failed to assign permission" });
-    } finally {
-      setSaving(false);
+      // 🔹 Log user trước khi refresh
+      console.log("🔹 [Before refresh] Current user:", authService.getCurrentUser());
+
+      // 🔄 Gọi API refresh user info
+      console.log("🔹 Calling authService.refreshUser()...");
+      await authService.refreshUser();
+
+      // ⏳ Log user sau khi refresh
+      const updatedUser = authService.getCurrentUser();
+      console.log("✅ [After refresh] Updated user:", updatedUser);
+    } else {
+      addToast({
+        type: "error",
+        message: res.message || "Failed to assign permission",
+      });
     }
-  };
+  } catch (err) {
+    console.error("❌ Failed to assign permission:", err);
+    addToast({ type: "error", message: "Failed to assign permission" });
+  } finally {
+    setSaving(false);
+  }
+};
 
   const groupedPermissions = allPermissions.reduce((acc, perm) => {
     const [group] = perm.name.split("_");

@@ -125,7 +125,7 @@ function CategoriesContent() {
       } else {
         addToast({
           type: "error",
-          message: response.message || "Failed to save category",
+          message: response.data || "Failed to save category",
         });
         setShowCreateModal(false);
       }
@@ -212,7 +212,7 @@ function CategoriesContent() {
           fetchCategories={fetchCategories}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          itemsPerPage={5}
+          itemsPerPage={10}
         />
       </div>
 
