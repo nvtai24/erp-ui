@@ -84,7 +84,7 @@ export default function CreateOrder() {
         value: product.productId.toString(),
         label: `${
           product.productName
-        } - ${product.unitPrice.toLocaleString()}đ`,
+        } - $${product.unitPrice.toLocaleString()}`,
       }));
   };
 
@@ -184,7 +184,6 @@ export default function CreateOrder() {
     setLoading(true);
     try {
       console.log("Creating order with data:", orderData);
-      // await axiosClient.post("/orders", orderData);
       await orderService.createOrder(orderData);
       setAlert({
         show: true,
@@ -192,14 +191,22 @@ export default function CreateOrder() {
         title: "Success!",
         message: "Order has been created successfully.",
       });
-      // Hide alert after 3 seconds
+      // Hide alert and reset form after 2 seconds
       setTimeout(() => {
         setAlert((prev) => ({ ...prev, show: false }));
-      }, 3000);
-      // Navigate after alert is hidden
-      setTimeout(() => {
-        navigate("/orders");
-      }, 3500);
+        // Reset form
+        setCustomerId(null);
+        setIsAddingCustomer(false);
+        setNewCustomer({ name: "", phone: "" });
+        setItems([
+          {
+            id: Date.now().toString(),
+            productId: 0,
+            quantity: 1,
+            unitPrice: 0,
+          },
+        ]);
+      }, 2000);
     } catch (error) {
       console.error("Failed to create order:", error);
       setAlert({
@@ -343,7 +350,7 @@ export default function CreateOrder() {
 
           <div className="flex items-center justify-between pt-4 border-t">
             <div className="text-lg font-semibold">
-              Total: {total.toLocaleString()}$
+              Total: ${total.toLocaleString()}
             </div>
             <div className="flex gap-2">
               <button
