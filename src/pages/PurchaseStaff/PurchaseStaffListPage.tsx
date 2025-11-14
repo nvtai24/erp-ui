@@ -285,14 +285,13 @@ export default function PurchaseStaffListPage() {
         )}
 
         {/* Table */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <PurchaseStaffTable
-            data={purchaseStaffs}
-            isLoading={isLoading}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        </div>
+        <PurchaseStaffTable
+          data={purchaseStaffs}
+          isLoading={isLoading}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          itemsPerPage={10}
+        />
       </div>
     </>
   );

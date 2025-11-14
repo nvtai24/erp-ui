@@ -283,14 +283,13 @@ export default function SaleStaffListPage() {
         )}
 
         {/* Table */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <SaleStaffTable
-            data={saleStaffs}
-            isLoading={isLoading}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        </div>
+        <SaleStaffTable
+          data={saleStaffs}
+          isLoading={isLoading}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          itemsPerPage={10}
+        />
       </div>
     </>
   );
