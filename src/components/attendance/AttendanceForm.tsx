@@ -1,4 +1,10 @@
 import { useState, useEffect } from "react";
+import employeeService from "../../services/employeeService";
+
+interface Employee {
+  employeeId: number;
+  fullName: string;
+}
 
 interface AttendanceFormProps {
   attendance?: {
@@ -32,6 +38,35 @@ export default function AttendanceForm({
     daysOff: 0,
   });
 
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [loadingEmployees, setLoadingEmployees] = useState(true);
+
+  // Fetch danh sách nhân viên từ employeeService
+  const fetchEmployees = async () => {
+    try {
+      const res = await employeeService.getEmployees({
+        pageNumber: 1,
+        pageSize: 100,
+      });
+      if (res.success && res.data) {
+        setEmployees(
+          res.data.map((emp: any) => ({
+            employeeId: emp.employeeId,
+            fullName: emp.fullName,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    } finally {
+      setLoadingEmployees(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
   useEffect(() => {
     if (attendance) {
       setFormData({
@@ -39,6 +74,13 @@ export default function AttendanceForm({
         workDate: attendance.workDate,
         status: attendance.status,
         daysOff: attendance.daysOff,
+      });
+    } else {
+      setFormData({
+        employeeId: 0,
+        workDate: "",
+        status: "Present",
+        daysOff: 0,
       });
     }
   }, [attendance]);
@@ -83,20 +125,44 @@ export default function AttendanceForm({
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Employee ID */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Employee ID
-            </label>
-            <input
-              type="number"
-              name="employeeId"
-              value={formData.employeeId || ""}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              required
-            />
-          </div>
+          {/* Employee selection */}
+          {attendance ? (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Employee
+              </label>
+              <input
+                type="text"
+                value={attendance.employeeName}
+                readOnly
+                className="w-full px-3 py-2 border rounded-md bg-gray-100 text-gray-600 cursor-not-allowed"
+              />
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Select Employee
+              </label>
+              <select
+                name="employeeId"
+                value={formData.employeeId}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none max-h-40 overflow-y-auto"
+                required
+              >
+                <option value="">-- Select an employee --</option>
+                {loadingEmployees ? (
+                  <option disabled>Loading...</option>
+                ) : (
+                  employees.map((emp) => (
+                    <option key={emp.employeeId} value={emp.employeeId}>
+                      {emp.fullName}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
+          )}
 
           {/* Work Date */}
           <div>

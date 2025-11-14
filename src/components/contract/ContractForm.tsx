@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
 import { Contract } from "../../types/contract";
+import employeeService from "../../services/employeeService";
+
+interface Employee {
+  employeeId: number;
+  fullName: string;
+}
 
 type Props = {
   contract?: Contract;
@@ -19,6 +25,36 @@ export default function ContractForm({ contract, onSubmit, onClose, isSubmitting
     employeeId: 0,
   });
 
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [loadingEmployees, setLoadingEmployees] = useState(true);
+
+  // Lấy danh sách nhân viên
+  const fetchEmployees = async () => {
+    try {
+      const res = await employeeService.getEmployees({
+        pageNumber: 1,
+        pageSize: 100,
+      });
+      if (res.success && res.data) {
+        setEmployees(
+          res.data.map((emp: any) => ({
+            employeeId: emp.employeeId,
+            fullName: emp.fullName,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    } finally {
+      setLoadingEmployees(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  // Load dữ liệu khi edit
   useEffect(() => {
     if (contract) {
       setFormData({
@@ -31,6 +67,16 @@ export default function ContractForm({ contract, onSubmit, onClose, isSubmitting
         status: contract.status,
         employeeId: contract.employeeId,
       });
+    } else {
+      setFormData({
+        contractType: "",
+        startDate: "",
+        endDate: "",
+        baseSalary: 0,
+        position: "",
+        status: "Active",
+        employeeId: 0,
+      });
     }
   }, [contract]);
 
@@ -38,19 +84,27 @@ export default function ContractForm({ contract, onSubmit, onClose, isSubmitting
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "baseSalary" || name === "employeeId" ? Number(value) : value,
+      [name]:
+        name === "baseSalary" || name === "employeeId"
+          ? Number(value)
+          : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  await onSubmit(formData as Omit<Contract, "contractId" | "employeeName">);
-};
-
+    e.preventDefault();
+    await onSubmit(formData as Omit<Contract, "contractId" | "employeeName">);
+  };
 
   return (
-    <div className="fixed inset-0 bg-gray-700 bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
+    <div
+      className="fixed inset-0 bg-gray-700 bg-opacity-40 flex justify-center items-center z-50"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h2 className="text-xl font-semibold mb-4">
           {contract ? "Edit Contract" : "Create New Contract"}
         </h2>
@@ -137,18 +191,40 @@ export default function ContractForm({ contract, onSubmit, onClose, isSubmitting
             </select>
           </div>
 
-          {/* Employee ID */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Employee ID</label>
-            <input
-              type="number"
-              name="employeeId"
-              value={formData.employeeId || ""}
-              onChange={handleChange}
-              required
-              className="border border-gray-300 rounded-md px-3 py-2 w-full"
-            />
-          </div>
+          {/* Employee selection */}
+          {contract ? (
+            <div>
+              <label className="block text-sm font-medium mb-1">Employee</label>
+              <input
+                type="text"
+                value={contract.employeeName}
+                readOnly
+                className="border border-gray-300 rounded-md px-3 py-2 w-full bg-gray-100 text-gray-600 cursor-not-allowed"
+              />
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-medium mb-1">Select Employee</label>
+              <select
+                name="employeeId"
+                value={formData.employeeId || ""}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-md px-3 py-2 w-full max-h-40 overflow-y-auto"
+                required
+              >
+                <option value="">-- Select an employee --</option>
+                {loadingEmployees ? (
+                  <option disabled>Loading...</option>
+                ) : (
+                  employees.map((emp) => (
+                    <option key={emp.employeeId} value={emp.employeeId}>
+                      {emp.fullName}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
+          )}
 
           {/* Actions */}
           <div className="flex justify-end gap-3 mt-6">
