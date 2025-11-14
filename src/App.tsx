@@ -45,13 +45,16 @@ import OrderDetail from "./pages/SalesOrder/OrderDetails";
 import Contracts from "./pages/Contracts/Contracts";
 import Attendances from "./pages/Attendances/Attendances";
 import Payrolls from "./pages/Payrolls/Payrolls";
+import AuditLog from "./pages/AuditLog";
+import PurchaseStaffListPage from "./pages/PurchaseStaff/PurchaseStaffListPage";
+import SaleStaffListPage from "./pages/SaleStaff/SaleStaffListPage";
 
 export default function App() {
   // Test API
   useEffect(() => {
     const testApi = async () => {
       try {
-        var response = await pingService.ping();
+        const response = await pingService.ping();
         console.log("API response:", response);
       } catch (error) {
         console.error("API call error:", error);
@@ -215,6 +218,36 @@ export default function App() {
             <Route
               path="/employees/:employeeId"
               element={<EmployeeDetailPage />}
+            />
+
+            {/* Purchase Staff Management */}
+            <Route
+              path="/purchase-staff"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <PurchaseStaffListPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Sale Staff Management */}
+            <Route
+              path="/sale-staff"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <SaleStaffListPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Audit Log */}
+            <Route
+              path="/audit-log"
+              element={
+                <ProtectedRoute requiredRole="Admin">
+                  <AuditLog />
+                </ProtectedRoute>
+              }
             />
             {/* Purchase Orders */}
             {/* <Route path="/purchase-orders" element={<PurchaseOrders />} /> */}
