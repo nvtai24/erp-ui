@@ -23,182 +23,204 @@ type NavItem = {
     path: string;
     pro?: boolean;
     new?: boolean;
-    requiredRole?: string;
+    requiredRoles?: string[];
+    requiredPermissions?: string[];
   }[];
-  requiredRole?: string;
+  requiredRoles?: string[];
+  requiredPermissions?: string[];
 };
 
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
+    requiredRoles: ["Admin", "Super Admin"],
     path: "/",
   },
   {
     name: "Roles & Accounts",
     icon: <Users />,
     subItems: [
-      // {
-      //   name: "Accounts",
-      //   path: "/accounts",
-      //   requiredRole: "Admin",
-      // },
       {
         name: "Accounts",
         path: "/accounts",
+        requiredPermissions: ["Account_View"],
       },
       {
         name: "Roles",
         path: "/roles",
+        requiredPermissions: ["Role_View"],
       },
       {
         name: "Audit Log",
         path: "/audit-log",
-        requiredRole: "Admin",
+        requiredPermissions: ["Warehouse_View"],
       },
     ],
   },
   {
     name: "Employees",
     icon: <UserCog />,
+    requiredPermissions: ["Employee_View"],
     subItems: [
-      { name: "View Employees", path: "/employees", pro: false },
-      { name: "Purchase Staff", path: "/purchase-staff", pro: false, requiredRole: "Admin" },
-      { name: "Sale Staff", path: "/sale-staff", pro: false, requiredRole: "Admin" },
+      { 
+        name: "View Employees", 
+        path: "/employees", 
+        pro: false,
+        requiredPermissions: ["Employee_View"],
+      },
+      { 
+        name: "Purchase Staff", 
+        path: "/purchase-staff", 
+        pro: false, 
+        requiredPermissions: ["PurchaseStaff_View"],
+      },
+      { 
+        name: "Sale Staff", 
+        path: "/sale-staff", 
+        pro: false, 
+        requiredPermissions: ["SaleStaff_View"],
+      },
     ],
   },
   {
     name: "New Order",
     icon: <BoxCubeIcon />,
     path: "/orders/create",
-    // subItems: [
-    //   { name: "View Orders", path: "/orders", pro: false },
-    //   { name: "Create Order", path: "/orders/create", pro: false },
-    // ],
+    requiredPermissions: ["Sale_View"],
   },
   {
     name: "Import Purchase",
     icon: <BoxCubeIcon />,
     path: "/purchase-orders/create",
-    // subItems: [
-    //   { name: "View Purchases", path: "/purchase-orders", pro: false },
-    //   { name: "Create Purchase", path: "/purchase-orders/create", pro: false },
-    // ],
-  },
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: "Calendar",
-  //   path: "/calendar",
-  // },
-  // {
-  //   icon: <UserCircleIcon />,
-  //   name: "User Profile",
-  //   path: "/profile",
-  // },
-  {
-    icon: <BoxCubeIcon />,
-    name: "Products",
-    path: "/products",
+    requiredPermissions: ["Purchase_View"],
   },
   {
     icon: <BoxCubeIcon />,
     name: "Categories",
     path: "/categories",
+    requiredPermissions: ["Category_Add"],
   },
   {
     icon: <Warehouse />,
     name: "Warehouses",
     path: "/warehouses",
+    requiredPermissions: ["Warehouse_View"],
   },
   {
     icon: <FileUser />,
     name: "Contracts",
     path: "/contracts",
-    requiredRole: "Admin",
+    requiredRoles: ["Admin"],
+    requiredPermissions: ["Contract_View"],
   },
   {
     icon: <Banknote  />,
     name: "Payrolls",
     path: "/payrolls",
-    requiredRole: "Admin",
+    requiredRoles: ["Admin"],
+    requiredPermissions: ["Payroll_View"],
   },
   {
     icon: <Calendar  />,
     name: "Attendances",
     path: "/attendances",
-    requiredRole: "Admin",
+    requiredRoles: ["Admin"],
+    requiredPermissions: ["Attendance_View"],
   },
   {
     icon: <Package2 />,
     name: "Suppliers",
     path: "/suppliers",
+    requiredPermissions: ["Supplier_View"],
   },
   {
     icon: <UserLineIcon />,
     name: "Customers",
     path: "/customers",
+    requiredPermissions: ["Customer_View"],
   },
-  // {
-  //   icon: <ListIcon />,
-  //   name: "Form",
-  //   path: "/form-elements",
-  // },
-  // {
-  //   name: "Tables",
-  //   icon: <TableIcon />,
-  //   path: "/basic-tables",
-  // },
-  // {
-  //   name: "Pages",
-  //   icon: <PageIcon />,
-  //   subItems: [{ name: "Blank Page", path: "/blank", pro: false }],
-  // },
-  // {
-  //   name: "404 Error",
-  //   icon: <PageIcon />,
-  //   path: "/error-404",
-  // },
   {
     icon: <BarChart3 />,
     name: "Reports",
+    requiredPermissions: ["Warehouse_ViewStatistic"],
     subItems: [
       {
         name: "Warehouse Statistics",
         path: "/reports/warehouse-statistics",
         pro: false,
+        requiredPermissions: ["Warehouse_ViewStatistic"],
       },
-      { name: "Stock History", path: "/reports/stock-history", pro: false },
-      { name: "Customer Orders", path: "/reports/orders", pro: false },
+      { 
+        name: "Stock History", 
+        path: "/reports/stock-history", 
+        pro: false,
+        requiredPermissions: ["Warehouse_ViewStockHistory"],
+      },
+      { 
+        name: "Customer Orders", 
+        path: "/reports/orders", 
+        pro: false,
+        requiredPermissions: ["Warehouse_ViewCustomerOrder"],
+      },
     ],
   },
 ];
 
-const othersItems: NavItem[] = [
-];
+const othersItems: NavItem[] = [];
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
   const [userRoles, setUserRoles] = useState<string[]>([]);
+  const [userPermissions, setUserPermissions] = useState<string[]>([]);
 
   useEffect(() => {
-    const fetchRoles = async () => {
+    const fetchRolesAndPermissions = async () => {
       const user = await authService.getCurrentUser();
       if (user) {
         setUserRoles(user.roles || []);
+        setUserPermissions(user.permissions || []);
       }
     };
-    fetchRoles();
+    fetchRolesAndPermissions();
   }, []);
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
     index: number;
   } | null>(null);
-  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
-    {}
-  );
+  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>({});
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  // Hàm kiểm tra quyền truy cập
+  const hasAccess = useCallback(
+    (requiredRoles?: string[], requiredPermissions?: string[]) => {
+      // Nếu không có yêu cầu gì thì cho phép truy cập
+      if (!requiredRoles && !requiredPermissions) {
+        return true;
+      }
+
+      let hasRoleAccess = true;
+      let hasPermissionAccess = true;
+
+      // Kiểm tra roles (phải có ít nhất 1 role khớp)
+      if (requiredRoles && requiredRoles.length > 0) {
+        hasRoleAccess = requiredRoles.some(role => userRoles.includes(role));
+      }
+
+      // Kiểm tra permissions (phải có ít nhất 1 permission khớp)
+      if (requiredPermissions && requiredPermissions.length > 0) {
+        hasPermissionAccess = requiredPermissions.some(permission => 
+          userPermissions.includes(permission)
+        );
+      }
+
+      // Cần cả role VÀ permission đều thỏa mãn
+      return hasRoleAccess && hasPermissionAccess;
+    },
+    [userRoles, userPermissions]
+  );
 
   const isActive = useCallback(
     (path: string) => {
@@ -268,10 +290,7 @@ const AppSidebar: React.FC = () => {
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
     <ul className="flex flex-col gap-4">
       {items
-        .filter((nav) => {
-          if (!nav.requiredRole) return true;
-          return userRoles.includes(nav.requiredRole);
-        })
+        .filter((nav) => hasAccess(nav.requiredRoles, nav.requiredPermissions))
         .map((nav, index) => (
           <li key={nav.name}>
             {nav.subItems ? (
@@ -353,10 +372,9 @@ const AppSidebar: React.FC = () => {
               >
                 <ul className="mt-2 space-y-1 ml-9">
                   {nav.subItems
-                    .filter((subItem) => {
-                      if (!subItem.requiredRole) return true;
-                      return userRoles.includes(subItem.requiredRole);
-                    })
+                    .filter((subItem) => 
+                      hasAccess(subItem.requiredRoles, subItem.requiredPermissions)
+                    )
                     .map((subItem) => (
                       <li key={subItem.name}>
                         <Link
@@ -478,11 +496,6 @@ const AppSidebar: React.FC = () => {
                     : "justify-start"
                 }`}
               >
-                {/* {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
-                ) : (
-                  <HorizontaLDots />
-                )} */}
               </h2>
               {renderMenuItems(othersItems, "others")}
             </div>

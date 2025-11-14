@@ -77,7 +77,7 @@ export default function App() {
             <Route
               path="/accounts"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredPermission="Account_View">
                   <Accounts />
                 </ProtectedRoute>
               }
@@ -86,7 +86,7 @@ export default function App() {
             <Route
               path="/roles"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredPermission="Role_View">
                   <Roles />
                 </ProtectedRoute>
               }
@@ -102,70 +102,82 @@ export default function App() {
             />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
-            <Route path="/products" element={<Products />} />
 
+            {/* Products */}
             {/* <Route
-              path="/categories"
+              path="/products"
               element={
-                <ProtectedRoute>
-                  <Categories />
+                <ProtectedRoute requiredPermission="Product_View">
+                  <Products />
                 </ProtectedRoute>
               }
             /> */}
 
+            {/* Categories */}
             <Route
               path="/categories"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute requiredPermission="Category_Add">
                   <Categories />
                 </ProtectedRoute>
               }
             />
 
+            {/* Warehouses */}
             <Route
               path="/warehouses"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredPermission="Warehouse_View">
                   <Warehouses />
                 </ProtectedRoute>
               }
             />
+
+            {/* Contracts */}
             <Route
               path="/contracts"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute requiredPermission="Contract_View">
                   <Contracts />
                 </ProtectedRoute>
               }
             />
+
+            {/* Payrolls */}
             <Route
               path="/payrolls"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute requiredPermission="Payroll_View">
                   <Payrolls />
                 </ProtectedRoute>
               }
             />
+
+            {/* Attendances */}
             <Route
               path="/attendances"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute requiredPermission="Attendance_View">
                   <Attendances />
                 </ProtectedRoute>
               }
             />
+
+            {/* Customers */}
             <Route
               path="/customers"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredPermission="Customer_View">
                   <Customers />
                 </ProtectedRoute>
               }
             />
+
+            {/* Suppliers */}
             <Route
               path="/suppliers"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredPermission="Supplier_View">
                   <Suppliers />
                 </ProtectedRoute>
               }
@@ -190,9 +202,23 @@ export default function App() {
             <Route path="/bar-chart" element={<BarChart />} />
 
             {/* Sale Orders */}
-            {/* <Route path="/orders" element={<Orders />} /> */}
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute requiredPermission="Order_View">
+                  <Orders />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/orders/create" element={<CreateOrder />} />
-            {/* <Route path="/orders/:id" element={<OrderDetail />} /> */}
+            <Route
+              path="/orders/:id"
+              element={
+                <ProtectedRoute requiredPermission="Order_View">
+                  <OrderDetail />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Reports */}
             <Route
@@ -209,22 +235,46 @@ export default function App() {
               path="/reports/orders/:orderId"
               element={<CustomerOrderDetailPage />}
             />
-            <Route path="/employees" element={<EmployeeListPage />} />
-            <Route path="/employees/create" element={<EmployeeFormPage />} />
+
+            {/* Employees */}
+            <Route
+              path="/employees"
+              element={
+                <ProtectedRoute requiredPermission="Employee_View">
+                  <EmployeeListPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/employees/create"
+              element={
+                <ProtectedRoute>
+                  <EmployeeFormPage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/employees/edit/:employeeId"
-              element={<EmployeeFormPage />}
+              element={
+                <ProtectedRoute>
+                  <EmployeeFormPage />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="/employees/:employeeId"
-              element={<EmployeeDetailPage />}
+              element={
+                <ProtectedRoute requiredPermission="Employee_View">
+                  <EmployeeDetailPage />
+                </ProtectedRoute>
+              }
             />
 
             {/* Purchase Staff Management */}
             <Route
               path="/purchase-staff"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute requiredPermission="PurchaseStaff_View">
                   <PurchaseStaffListPage />
                 </ProtectedRoute>
               }
@@ -234,7 +284,7 @@ export default function App() {
             <Route
               path="/sale-staff"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute requiredPermission="SaleStaff_View">
                   <SaleStaffListPage />
                 </ProtectedRoute>
               }
@@ -249,16 +299,28 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+
             {/* Purchase Orders */}
-            {/* <Route path="/purchase-orders" element={<PurchaseOrders />} /> */}
+            <Route
+              path="/purchase-orders"
+              element={
+                <ProtectedRoute requiredPermission="PurchaseOrder_View">
+                  <PurchaseOrders />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/purchase-orders/create"
               element={<CreatePurchaseOrder />}
             />
-            {/* <Route
+            <Route
               path="/purchase-orders/:id"
-              element={<PurchaseOrderDetails />}
-            /> */}
+              element={
+                <ProtectedRoute requiredPermission="PurchaseOrder_View">
+                  <PurchaseOrderDetails />
+                </ProtectedRoute>
+              }
+            />
           </Route>
 
           {/* Auth Layout */}

@@ -106,15 +106,7 @@ function RolesContent() {
             ? "Role updated successfully!"
             : "Role created successfully!",
         });
-
-        // 🔄 Gọi API để cập nhật lại user info
-        console.log("🔹 Calling authService.refreshUser()...");
-        await authService.refreshUser();
-
-        // ⏳ Đợi 1 chút để localStorage cập nhật rồi log
-        const updatedUser = authService.getCurrentUser();
-        console.log("✅ [After refresh] Updated user:", updatedUser);
-
+        
         setShowModal(false);
         fetchRoles();
       } else {
