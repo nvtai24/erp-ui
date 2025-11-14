@@ -25,7 +25,7 @@ function AttendancesContent() {
       });
 
       if (!res.success) {
-        addToast({ type: "error", message: res.message || "Failed to fetch attendance records" });
+        addToast({ type: "error", message: res.data || "Failed to fetch attendance records" });
         return { data: [], totalItems: 0 };
       }
 

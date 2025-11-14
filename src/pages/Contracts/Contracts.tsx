@@ -25,7 +25,7 @@ function ContractsContent() {
       });
 
       if (!res.success) {
-        addToast({ type: "error", message: res.message || "Failed to fetch contracts" });
+        addToast({ type: "error", message: res.data || "Failed to fetch contracts" });
         return { data: [], totalItems: 0 };
       }
 
