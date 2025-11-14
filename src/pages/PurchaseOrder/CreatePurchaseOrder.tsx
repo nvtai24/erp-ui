@@ -243,14 +243,16 @@ export default function CreatePurchaseOrder() {
         title: "Success!",
         message: "Purchase order has been created successfully.",
       });
-      // Hide alert after 2 seconds
+      // Hide alert and reset form after 2 seconds
       setTimeout(() => {
         setAlert((prev) => ({ ...prev, show: false }));
+        // Reset form
+        setSupplierId(null);
+        setIsAddingSupplier(false);
+        setNewSupplier({ name: "", phone: "" });
+        setItems([{ id: Date.now(), productId: 0, quantity: 1, unitPrice: 0 }]);
+        setNewProducts([]);
       }, 2000);
-      // Navigate after alert is hidden
-      setTimeout(() => {
-        navigate("/purchase-orders");
-      }, 2300);
     } catch (error) {
       console.error("Failed to create purchase order:", error);
       setAlert({
@@ -589,7 +591,7 @@ export default function CreatePurchaseOrder() {
 
           <div className="flex items-center justify-between pt-4 border-t">
             <div className="text-lg font-semibold">
-              Total: {total.toLocaleString()}$
+              Total: ${total.toLocaleString()}
             </div>
             <div className="flex gap-2">
               <button
