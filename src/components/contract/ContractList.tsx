@@ -54,7 +54,7 @@ export default function ContractList({ fetchContracts, onEdit, onDelete, itemsPe
                 <td className="px-4 py-2 border-b">{item.contractType}</td>
                 <td className="px-4 py-2 border-b">{item.employeeName || "—"}</td>
                 <td className="px-4 py-2 border-b">{item.position}</td>
-                <td className="px-4 py-2 border-b">{item.baseSalary.toLocaleString()} ₫</td>
+                <td className="px-4 py-2 border-b">{item.baseSalary.toLocaleString()} $</td>
                 <td className="px-4 py-2 border-b">{item.startDate?.substring(0, 10)}</td>
                 <td className="px-4 py-2 border-b">{item.endDate?.substring(0, 10)}</td>
                 <td className="px-4 py-2 border-b">

@@ -63,10 +63,7 @@ const navItems: NavItem[] = [
   {
     name: "Employees",
     icon: <UserCog />,
-    subItems: [
-      { name: "View Employees", path: "/employees", pro: false },
-      { name: "Add Employee", path: "/employees/create", pro: false },
-    ],
+    path: "/employees",
   },
   {
     name: "New Order",
@@ -91,11 +88,11 @@ const navItems: NavItem[] = [
   //   name: "Calendar",
   //   path: "/calendar",
   // },
-  {
-    icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
-  },
+  // {
+  //   icon: <UserCircleIcon />,
+  //   name: "User Profile",
+  //   path: "/profile",
+  // },
   {
     icon: <BoxCubeIcon />,
     name: "Products",
@@ -139,29 +136,26 @@ const navItems: NavItem[] = [
     name: "Customers",
     path: "/customers",
   },
-  {
-    icon: <ListIcon />,
-    name: "Form",
-    path: "/form-elements",
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    path: "/basic-tables",
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
-    subItems: [{ name: "Blank Page", path: "/blank", pro: false }],
-  },
-  {
-    name: "404 Error",
-    icon: <PageIcon />,
-    path: "/error-404",
-  },
-];
-
-const othersItems: NavItem[] = [
+  // {
+  //   icon: <ListIcon />,
+  //   name: "Form",
+  //   path: "/form-elements",
+  // },
+  // {
+  //   name: "Tables",
+  //   icon: <TableIcon />,
+  //   path: "/basic-tables",
+  // },
+  // {
+  //   name: "Pages",
+  //   icon: <PageIcon />,
+  //   subItems: [{ name: "Blank Page", path: "/blank", pro: false }],
+  // },
+  // {
+  //   name: "404 Error",
+  //   icon: <PageIcon />,
+  //   path: "/error-404",
+  // },
   {
     icon: <BarChart3 />,
     name: "Reports",
@@ -175,34 +169,9 @@ const othersItems: NavItem[] = [
       { name: "Customer Orders", path: "/reports/orders", pro: false },
     ],
   },
-  {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
-  },
-  {
-    icon: <BoxCubeIcon />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
-  },
+];
+
+const othersItems: NavItem[] = [
 ];
 
 const AppSidebar: React.FC = () => {
@@ -507,11 +476,11 @@ const AppSidebar: React.FC = () => {
                     : "justify-start"
                 }`}
               >
-                {isExpanded || isHovered || isMobileOpen ? (
+                {/* {isExpanded || isHovered || isMobileOpen ? (
                   "Others"
                 ) : (
                   <HorizontaLDots />
-                )}
+                )} */}
               </h2>
               {renderMenuItems(othersItems, "others")}
             </div>
