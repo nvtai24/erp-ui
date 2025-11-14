@@ -123,7 +123,7 @@ function PayrollsContent() {
       } else {
         addToast({
           type: "error",
-          message: response.message || "Failed to calculate payroll",
+          message: response.data || "Failed to calculate payroll",
         });
       }
     } catch (error: any) {
