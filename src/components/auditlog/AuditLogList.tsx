@@ -52,17 +52,52 @@ export default function AuditLogList({ onViewDetail }: AuditLogListProps) {
       );
 
       const response = await auditLogService.getList(cleanFilters);
-      setLogs(response.data.items);
-      setPagination({
-        pageIndex: response.data.pageIndex,
-        pageSize: response.data.pageSize,
-        totalPages: response.data.totalPages,
-        totalCount: response.data.totalCount,
-      });
+      
+      // Check if response.data is array (backend might return array directly)
+      let items: AuditLogDto[] = [];
+      let paginationData = {
+        pageIndex: filters.pageIndex || 1,
+        pageSize: filters.pageSize || 10,
+        totalPages: 0,
+        totalCount: 0,
+      };
+
+      if (Array.isArray(response.data)) {
+        // Backend returns array directly - need client-side pagination
+        // Sort by createdAt descending (newest first)
+        const allItems = response.data.sort((a: AuditLogDto, b: AuditLogDto) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        const currentPageSize = filters.pageSize || 10;
+        const currentPageIndex = filters.pageIndex || 1;
+        
+        paginationData.totalCount = allItems.length;
+        paginationData.totalPages = Math.ceil(allItems.length / currentPageSize);
+        paginationData.pageIndex = currentPageIndex;
+        paginationData.pageSize = currentPageSize;
+        
+        // Slice items for current page
+        const startIndex = (currentPageIndex - 1) * currentPageSize;
+        const endIndex = startIndex + currentPageSize;
+        items = allItems.slice(startIndex, endIndex);
+      } else if (response.data && typeof response.data === 'object') {
+        // Backend returns object with items
+        if (response.data.items && Array.isArray(response.data.items)) {
+          items = response.data.items;
+          paginationData = {
+            pageIndex: response.data.pageIndex || filters.pageIndex || 1,
+            pageSize: response.data.pageSize || filters.pageSize || 10,
+            totalPages: response.data.totalPages || 0,
+            totalCount: response.data.totalCount || 0,
+          };
+        }
+      }
+      
+      setLogs(items);
+      setPagination(paginationData);
     } catch (err) {
       const errorMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to fetch audit logs";
       setError(errorMessage);
-      console.error("Error fetching logs:", err);
     } finally {
       setLoading(false);
     }
@@ -71,7 +106,7 @@ export default function AuditLogList({ onViewDetail }: AuditLogListProps) {
   useEffect(() => {
     fetchLogs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.pageIndex, filters.pageSize]);
+  }, [filters]);
 
   const handleExport = async () => {
     try {
@@ -90,10 +125,6 @@ export default function AuditLogList({ onViewDetail }: AuditLogListProps) {
 
   const handleFilterChange = (key: keyof AuditLogSearchParams, value: string | number) => {
     setFilters({ ...filters, [key]: value, pageIndex: 1 });
-  };
-
-  const handleSearch = () => {
-    fetchLogs();
   };
 
   const handleReset = () => {
@@ -140,7 +171,6 @@ export default function AuditLogList({ onViewDetail }: AuditLogListProps) {
                 placeholder="Search by keyword..."
                 value={filters.keyword || ""}
                 onChange={(e) => handleFilterChange("keyword", e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
@@ -250,16 +280,10 @@ export default function AuditLogList({ onViewDetail }: AuditLogListProps) {
 
               <div className="md:col-span-2 flex gap-2 items-end">
                 <button
-                  onClick={handleSearch}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Apply Filters
-                </button>
-                <button
                   onClick={handleReset}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  Reset
+                  Clear All Filters
                 </button>
               </div>
             </div>
@@ -371,77 +395,57 @@ export default function AuditLogList({ onViewDetail }: AuditLogListProps) {
           </div>
 
           {/* Pagination */}
-          {logs && logs.length > 0 && (
-            <div className="bg-gray-50 px-6 py-4 flex items-center justify-between border-t border-gray-200">
+          {logs && logs.length > 0 && pagination.totalPages > 1 && (
+            <div className="bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700">
               <div className="flex-1 flex justify-between sm:hidden">
-                <button
-                  disabled={pagination.pageIndex === 1}
-                  onClick={() => handlePageChange(pagination.pageIndex - 1)}
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                <button 
+                  onClick={() => handlePageChange(pagination.pageIndex - 1)} 
+                  disabled={pagination.pageIndex === 1} 
+                  className="px-4 py-2 border rounded disabled:opacity-50 text-gray-700 dark:text-gray-300"
                 >
-                  Previous
+                  Prev
                 </button>
-                <button
-                  disabled={pagination.pageIndex === pagination.totalPages}
-                  onClick={() => handlePageChange(pagination.pageIndex + 1)}
-                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                <button 
+                  onClick={() => handlePageChange(pagination.pageIndex + 1)} 
+                  disabled={pagination.pageIndex === pagination.totalPages} 
+                  className="px-4 py-2 border rounded disabled:opacity-50 text-gray-700 dark:text-gray-300"
                 >
                   Next
                 </button>
               </div>
               <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                <div className="flex items-center gap-4">
-                  <p className="text-sm text-gray-700">
-                    Showing{" "}
-                    <span className="font-medium">
-                      {(pagination.pageIndex - 1) * pagination.pageSize + 1}
-                    </span>{" "}
-                    to{" "}
-                    <span className="font-medium">
-                      {Math.min(
-                        pagination.pageIndex * pagination.pageSize,
-                        pagination.totalCount
-                      )}
-                    </span>{" "}
-                    of <span className="font-medium">{pagination.totalCount}</span>{" "}
-                    results
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <label className="text-sm text-gray-700">Per page:</label>
-                    <select
-                      value={filters.pageSize}
-                      onChange={(e) =>
-                        handleFilterChange("pageSize", Number(e.target.value))
-                      }
-                      className="border border-gray-300 rounded-lg px-2 py-1 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value={10}>10</option>
-                      <option value={20}>20</option>
-                      <option value={50}>50</option>
-                      <option value={100}>100</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    disabled={pagination.pageIndex === 1}
-                    onClick={() => handlePageChange(pagination.pageIndex - 1)}
-                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  Showing <span className="font-medium">{(pagination.pageIndex - 1) * pagination.pageSize + 1}</span> to <span className="font-medium">{Math.min(pagination.pageIndex * pagination.pageSize, pagination.totalCount)}</span> of <span className="font-medium">{pagination.totalCount}</span> results
+                </p>
+                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                  <button 
+                    onClick={() => handlePageChange(pagination.pageIndex - 1)} 
+                    disabled={pagination.pageIndex === 1} 
+                    className="px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                   >
-                    Previous
+                    Prev
                   </button>
-                  <span className="text-sm text-gray-700">
-                    Page <span className="font-medium">{pagination.pageIndex}</span> of{" "}
-                    <span className="font-medium">{pagination.totalPages}</span>
-                  </span>
-                  <button
-                    disabled={pagination.pageIndex === pagination.totalPages}
-                    onClick={() => handlePageChange(pagination.pageIndex + 1)}
-                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
+                    <button 
+                      key={page} 
+                      onClick={() => handlePageChange(page)} 
+                      className={`px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                        pagination.pageIndex === page
+                          ? "bg-blue-50 dark:bg-blue-900 border-blue-500 text-blue-600 dark:text-blue-200"
+                          : ""
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  <button 
+                    onClick={() => handlePageChange(pagination.pageIndex + 1)} 
+                    disabled={pagination.pageIndex === pagination.totalPages} 
+                    className="px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
                   >
                     Next
                   </button>
-                </div>
+                </nav>
               </div>
             </div>
           )}

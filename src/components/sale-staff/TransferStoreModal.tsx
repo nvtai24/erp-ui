@@ -47,14 +47,19 @@ export default function TransferStoreModal({
   if (!isOpen) return null;
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
-      onClick={onClose}
-    >
-      <div 
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 z-50 overflow-y-auto animate-in fade-in duration-200">
+      <div className="flex min-h-screen items-center justify-center p-4">
+        {/* Backdrop với blur */}
+        <div
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm transition-all"
+          onClick={onClose}
+        />
+
+        {/* Modal */}
+        <div 
+          className="relative bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full mx-auto animate-in zoom-in-95 duration-200"
+          onClick={(e) => e.stopPropagation()}
+        >
         <div className="flex items-center justify-between p-5 border-b border-gray-200 dark:border-gray-700">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             Transfer to Another Store
@@ -114,6 +119,7 @@ export default function TransferStoreModal({
             </button>
           </div>
         </form>
+        </div>
       </div>
     </div>
   );

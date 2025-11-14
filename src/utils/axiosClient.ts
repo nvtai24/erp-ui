@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const axiosClient = axios.create({
   baseURL: "https://localhost:7012/api", // Update with your API base URL
@@ -9,6 +9,16 @@ const axiosClient = axios.create({
   // Uncomment below if you have HTTPS certificate issues (DEV ONLY)
   // httpsAgent: new https.Agent({ rejectUnauthorized: false })
 });
+
+// Request interceptor: Ensure withCredentials is set for all requests
+axiosClient.interceptors.request.use(
+  (config) => {
+    // Ensure withCredentials is always true for cookie-based auth
+    config.withCredentials = true;
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 // Response adapter: backend uses PascalCase ResponseData { Data, Message, Success, StatusCode, MetaData }
 // while frontend expects camelCase ApiResponse { data, message, success, statusCode }.
@@ -61,7 +71,31 @@ axiosClient.interceptors.response.use(
 
     return response;
   },
-  (error) => Promise.reject(error)
+  (error: AxiosError) => {
+    // Handle 401 Unauthorized errors
+    if (error.response?.status === 401) {
+      // Only redirect if not already on login page and not during login request
+      const currentPath = window.location.pathname;
+      const isLoginPage = currentPath.includes("/signin");
+      const isLoginRequest = error.config?.url?.includes("/Accounts/Login");
+      
+      if (!isLoginPage && !isLoginRequest) {
+        // Clear user data from localStorage
+        localStorage.removeItem("user");
+        
+        // Use setTimeout to avoid interfering with HMR and allow error to propagate first
+        setTimeout(() => {
+          // Only redirect if still not on login page (avoid race conditions)
+          if (!window.location.pathname.includes("/signin")) {
+            const redirectUrl = encodeURIComponent(currentPath + window.location.search);
+            window.location.href = `/signin?redirect=${redirectUrl}`;
+          }
+        }, 100);
+      }
+    }
+    
+    return Promise.reject(error);
+  }
 );
 
 export default axiosClient;
