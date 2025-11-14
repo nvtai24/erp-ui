@@ -74,7 +74,7 @@ export default function App() {
             <Route
               path="/accounts"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredPermission="Account_View">
                   <Accounts />
                 </ProtectedRoute>
               }
@@ -83,7 +83,7 @@ export default function App() {
             <Route
               path="/roles"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredPermission="Role_View">
                   <Roles />
                 </ProtectedRoute>
               }
@@ -113,7 +113,7 @@ export default function App() {
             <Route
               path="/categories"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute requiredPermission="Category_View">
                   <Categories />
                 </ProtectedRoute>
               }
@@ -122,7 +122,7 @@ export default function App() {
             <Route
               path="/warehouses"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredPermission="Warehouse_View">
                   <Warehouses />
                 </ProtectedRoute>
               }
@@ -130,7 +130,7 @@ export default function App() {
             <Route
               path="/contracts"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute requiredPermission="Contract_View">
                   <Contracts />
                 </ProtectedRoute>
               }
@@ -138,7 +138,7 @@ export default function App() {
             <Route
               path="/payrolls"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute requiredPermission="Payroll_View">
                   <Payrolls />
                 </ProtectedRoute>
               }
@@ -146,7 +146,7 @@ export default function App() {
             <Route
               path="/attendances"
               element={
-                <ProtectedRoute requiredRole="Admin">
+                <ProtectedRoute requiredPermission="Attendance_View">
                   <Attendances />
                 </ProtectedRoute>
               }
@@ -154,7 +154,7 @@ export default function App() {
             <Route
               path="/customers"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredPermission="Customer_View">
                   <Customers />
                 </ProtectedRoute>
               }
@@ -162,7 +162,7 @@ export default function App() {
             <Route
               path="/suppliers"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredPermission="Supplier_View">
                   <Suppliers />
                 </ProtectedRoute>
               }
