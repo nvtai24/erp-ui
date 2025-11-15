@@ -64,9 +64,16 @@ export default function PurchaseStaffListPage() {
 
   const fetchWarehouses = async () => {
     try {
-      const response = await warehouseService.getWarehouses({});
+      const response = await warehouseService.getWarehouses({
+        pageNumber: 1,
+        pageSize: 1000,
+      });
       if (response.success && response.data) {
-        setWarehouses(response.data);
+        // Handle both array and paginated response
+        const warehouseList = Array.isArray(response.data) 
+          ? response.data 
+          : response.data.items || [];
+        setWarehouses(warehouseList);
       }
     } catch (error: any) {
       console.error("Fetch warehouses error:", error);

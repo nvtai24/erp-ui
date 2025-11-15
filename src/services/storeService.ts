@@ -3,8 +3,10 @@ import { Store, StoreApiResponse } from "../types/store";
 
 const storeService = {
   // Get all stores
-  getAllStores: async (): Promise<StoreApiResponse<Store[]>> => {
-    const res = await axiosClient.get<StoreApiResponse<Store[]>>("/stores");
+  getAllStores: async (params?: { pageNumber?: number; pageSize?: number }): Promise<StoreApiResponse<Store[]>> => {
+    const res = await axiosClient.get<StoreApiResponse<Store[]>>("/stores", { 
+      params: params || { pageNumber: 1, pageSize: 1000 } 
+    });
     return res.data;
   },
 

@@ -64,9 +64,16 @@ export default function SaleStaffListPage() {
 
   const fetchStores = async () => {
     try {
-      const response = await storeService.getAllStores();
+      const response = await storeService.getAllStores({
+        pageNumber: 1,
+        pageSize: 1000,
+      });
       if (response.success && response.data) {
-        setStores(response.data);
+        // Handle both array and paginated response
+        const storeList = Array.isArray(response.data)
+          ? response.data
+          : response.data.items || [];
+        setStores(storeList);
       }
     } catch (error: any) {
       console.error("Fetch stores error:", error);
